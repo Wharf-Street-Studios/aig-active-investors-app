@@ -2,7 +2,7 @@
   "name": "aig-active-investors-group",
   "version": "1.0.0",
   "main": "index.ts",
-  "homepage": "https://YOUR_GITHUB_USERNAME.github.io/aig-active-investors-group",
+  "homepage": "https://wharf-street-studios.github.io/aig-active-investors-app",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
