@@ -2,41 +2,63 @@
  * InvestConnect Mobile App - Expo Version
  */
 
-import React from 'react';
-import { useColorScheme, View, StyleSheet, Platform, ActivityIndicator } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useColorScheme, View, StyleSheet, Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { Provider as ReduxProvider } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+import * as Font from 'expo-font';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { store } from './src/store';
 import { lightTheme, darkTheme } from './src/theme';
 import AppNavigator from './src/navigation/AppNavigator';
 
+// Keep the splash screen visible while we fetch resources
+SplashScreen.preventAutoHideAsync();
+
 export default function App() {
   const colorScheme = useColorScheme();
   const theme = colorScheme === 'dark' ? darkTheme : lightTheme;
+  const [appIsReady, setAppIsReady] = useState(false);
 
-  const [fontsLoaded] = useFonts({
-    ...MaterialCommunityIcons.font,
-  });
+  useEffect(() => {
+    async function prepare() {
+      try {
+        // Pre-load fonts
+        await Font.loadAsync({
+          ...MaterialCommunityIcons.font,
+        });
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        // Tell the application to render
+        setAppIsReady(true);
+      }
+    }
 
-  if (!fontsLoaded) {
-    return (
-      <View style={[styles.webContainer, styles.loadingContainer]}>
-        <ActivityIndicator size="large" color={theme.colors.primary} />
-      </View>
-    );
+    prepare();
+  }, []);
+
+  const onLayoutRootView = useCallback(async () => {
+    if (appIsReady) {
+      // This tells the splash screen to hide immediately
+      await SplashScreen.hideAsync();
+    }
+  }, [appIsReady]);
+
+  if (!appIsReady) {
+    return null;
   }
 
   return (
     <ReduxProvider store={store}>
       <SafeAreaProvider>
         <PaperProvider theme={theme}>
-          <View style={styles.webContainer}>
+          <View style={styles.webContainer} onLayout={onLayoutRootView}>
             <View style={styles.mobileContainer}>
               <NavigationContainer theme={theme}>
                 <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
@@ -66,8 +88,5 @@ const styles = StyleSheet.create({
         boxShadow: '0 0 20px rgba(0,0,0,0.1)',
       },
     }),
-  },
-  loadingContainer: {
-    justifyContent: 'center',
   },
 });
