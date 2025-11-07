@@ -11,7 +11,7 @@ import {useAppDispatch} from '../store';
 import {likePost, unlikePost} from '../store/slices/feedSlice';
 import {formatDistanceToNow} from 'date-fns';
 import {useNavigation} from '@react-navigation/native';
-import {MoreVerticalIcon, FavouriteIcon, CommentIcon, Share08Icon, Bookmark01Icon, HashtagIcon, DollarCircleIcon} from '@hugeicons/react-native';
+import SimpleIcon from './SimpleIcon';
 
 interface PostCardProps {
   post: Post;
@@ -58,7 +58,7 @@ const PostCard: React.FC<PostCardProps> = ({post}) => {
           </View>
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuButton}>
-          <MoreVerticalIcon size={20} color={theme.colors.muted} />
+          <SimpleIcon name="more" size={20} color={theme.colors.muted} />
         </TouchableOpacity>
       </View>
 
@@ -74,7 +74,7 @@ const PostCard: React.FC<PostCardProps> = ({post}) => {
                 <View
                   key={`ticker-${index}`}
                   style={[styles.tag, {backgroundColor: theme.colors.background, borderColor: theme.colors.border}]}>
-                  <DollarCircleIcon size={12} color={theme.colors.primary} />
+                  <SimpleIcon name="dollar" size={12} color={theme.colors.primary} />
                   <Text style={[styles.tagText, {color: theme.colors.primary}]}>
                     {ticker}
                   </Text>
@@ -84,7 +84,7 @@ const PostCard: React.FC<PostCardProps> = ({post}) => {
                 <View
                   key={`tag-${index}`}
                   style={[styles.tag, {backgroundColor: theme.colors.background, borderColor: theme.colors.border}]}>
-                  <HashtagIcon size={12} color={theme.colors.primary} />
+                  <SimpleIcon name="hashtag" size={12} color={theme.colors.primary} />
                   <Text style={[styles.tagText, {color: theme.colors.primary}]}>
                     {tag}
                   </Text>
@@ -97,10 +97,10 @@ const PostCard: React.FC<PostCardProps> = ({post}) => {
 
       <View style={styles.actions}>
         <TouchableOpacity onPress={handleLike} style={styles.actionButton}>
-          <FavouriteIcon
+          <SimpleIcon
+            name={post.isLiked ? 'heart' : 'heart-outline'}
             size={22}
             color={post.isLiked ? '#FF4458' : theme.colors.muted}
-            variant={post.isLiked ? 'solid' : 'stroke'}
           />
           <Text style={[styles.actionText, {color: theme.colors.text}]}>
             {post.likesCount}
@@ -108,14 +108,14 @@ const PostCard: React.FC<PostCardProps> = ({post}) => {
         </TouchableOpacity>
 
         <TouchableOpacity onPress={handlePostPress} style={styles.actionButton}>
-          <CommentIcon size={22} color={theme.colors.muted} />
+          <SimpleIcon name="comment" size={22} color={theme.colors.muted} />
           <Text style={[styles.actionText, {color: theme.colors.text}]}>
             {post.commentsCount}
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.actionButton}>
-          <Share08Icon size={22} color={theme.colors.muted} />
+          <SimpleIcon name="share" size={22} color={theme.colors.muted} />
           <Text style={[styles.actionText, {color: theme.colors.text}]}>
             {post.sharesCount}
           </Text>
@@ -123,10 +123,10 @@ const PostCard: React.FC<PostCardProps> = ({post}) => {
 
         <View style={{flex: 1}} />
         <TouchableOpacity>
-          <Bookmark01Icon
+          <SimpleIcon
+            name={post.isSaved ? 'bookmark' : 'bookmark-outline'}
             size={22}
             color={post.isSaved ? theme.colors.primary : theme.colors.muted}
-            variant={post.isSaved ? 'solid' : 'stroke'}
           />
         </TouchableOpacity>
       </View>

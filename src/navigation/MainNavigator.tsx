@@ -6,8 +6,8 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {useColorScheme} from 'react-native';
-import {Home01Icon, Search01Icon, PlusSignIcon, Notification02Icon, UserIcon} from '@hugeicons/react-native';
 import {lightTheme, darkTheme} from '../theme';
+import SimpleIcon from '../components/SimpleIcon';
 
 import HomeScreen from '../screens/main/HomeScreen';
 import SearchScreen from '../screens/main/SearchScreen';
@@ -47,7 +47,7 @@ const MainNavigator: React.FC = () => {
         options={{
           tabBarLabel: 'Home',
           tabBarIcon: ({color, size}) => (
-            <Home01Icon size={size} color={color} />
+            <SimpleIcon name="home" size={size} color={color} />
           ),
         }}
       />
@@ -57,7 +57,7 @@ const MainNavigator: React.FC = () => {
         options={{
           tabBarLabel: 'Search',
           tabBarIcon: ({color, size}) => (
-            <Search01Icon size={size} color={color} />
+            <SimpleIcon name="search" size={size} color={color} />
           ),
         }}
       />
@@ -67,7 +67,7 @@ const MainNavigator: React.FC = () => {
         options={{
           tabBarLabel: 'Post',
           tabBarIcon: ({color, size}) => (
-            <PlusSignIcon size={size} color={color} />
+            <SimpleIcon name="plus" size={size} color={color} />
           ),
         }}
       />
@@ -77,7 +77,7 @@ const MainNavigator: React.FC = () => {
         options={{
           tabBarLabel: 'Alerts',
           tabBarIcon: ({color, size}) => (
-            <Notification02Icon size={size} color={color} />
+            <SimpleIcon name="bell" size={size} color={color} />
           ),
         }}
       />
@@ -87,7 +87,7 @@ const MainNavigator: React.FC = () => {
         options={{
           tabBarLabel: 'Profile',
           tabBarIcon: ({color, size}) => (
-            <UserIcon size={size} color={color} />
+            <SimpleIcon name="user" size={size} color={color} />
           ),
         }}
       />
