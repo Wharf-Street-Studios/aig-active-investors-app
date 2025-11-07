@@ -20,12 +20,14 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({navigation}) => {
   return (
     <View style={[styles.container, {backgroundColor: theme.colors.background}]}>
       <View style={styles.content}>
-        <Text variant="displayMedium" style={styles.title}>
-          AIG
-        </Text>
-        <Text variant="displayLarge" style={styles.subtitle}>
-          Active Investors Group
-        </Text>
+        <View style={styles.logoContainer}>
+          <Text variant="displayLarge" style={[styles.title, {color: theme.colors.primary}]}>
+            AIG
+          </Text>
+          <Text variant="titleMedium" style={styles.subtitle}>
+            Active Investors Group
+          </Text>
+        </View>
         <Text variant="bodyLarge" style={styles.tagline}>
           Connect, Share, and Grow Your Investment Knowledge
         </Text>
@@ -35,13 +37,15 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({navigation}) => {
         <Button
           mode="contained"
           onPress={() => navigation.navigate('Register')}
-          style={styles.button}>
+          style={styles.button}
+          contentStyle={styles.buttonContent}>
           Get Started
         </Button>
         <Button
           mode="outlined"
           onPress={() => navigation.navigate('Login')}
-          style={styles.button}>
+          style={styles.button}
+          contentStyle={styles.buttonContent}>
           Sign In
         </Button>
       </View>
@@ -60,26 +64,37 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: spacing.xl,
+  },
   title: {
-    fontWeight: 'bold',
-    marginBottom: spacing.md,
+    fontWeight: '900',
+    fontSize: 72,
+    letterSpacing: 2,
     textAlign: 'center',
+    marginBottom: spacing.xs,
   },
   subtitle: {
-    fontWeight: 'bold',
-    marginBottom: spacing.sm,
+    fontWeight: '400',
     textAlign: 'center',
+    opacity: 0.8,
+    letterSpacing: 0.5,
   },
   tagline: {
     textAlign: 'center',
-    opacity: 0.7,
+    opacity: 0.6,
     paddingHorizontal: spacing.xl,
+    marginTop: spacing.md,
   },
   buttonContainer: {
     gap: spacing.md,
   },
   button: {
-    paddingVertical: spacing.xs,
+    borderRadius: 12,
+  },
+  buttonContent: {
+    paddingVertical: spacing.sm,
   },
 });
 

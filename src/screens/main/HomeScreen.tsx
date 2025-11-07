@@ -81,9 +81,9 @@ const HomeScreen: React.FC = () => {
 
   return (
     <View style={[styles.container, {backgroundColor: theme.colors.background}]}>
-      <View style={[styles.header, {backgroundColor: theme.colors.surface}]}>
-        <Text variant="headlineMedium" style={styles.title}>
-          Active Investors Group
+      <View style={[styles.header, {backgroundColor: theme.colors.surface, borderBottomColor: theme.colors.surfaceVariant}]}>
+        <Text variant="headlineSmall" style={[styles.title, {color: theme.colors.primary}]}>
+          AIG
         </Text>
       </View>
 
@@ -109,17 +109,21 @@ const styles = StyleSheet.create({
   header: {
     padding: spacing.md,
     paddingTop: spacing.xl,
+    borderBottomWidth: 1,
   },
   title: {
-    fontWeight: 'bold',
+    fontWeight: '900',
+    letterSpacing: 1,
   },
   filterContainer: {
     flexDirection: 'row',
-    padding: spacing.md,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
     gap: spacing.sm,
+    flexWrap: 'wrap',
   },
   chip: {
-    marginRight: spacing.xs,
+    borderRadius: 20,
   },
   listContent: {
     paddingBottom: spacing.xl,
