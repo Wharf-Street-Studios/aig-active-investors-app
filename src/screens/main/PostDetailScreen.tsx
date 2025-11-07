@@ -6,7 +6,7 @@
 import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Text, TextInput, TouchableOpacity, useColorScheme, Image} from 'react-native';
 import {spacing, lightTheme, darkTheme} from '../../theme';
-import {formatDistanceToNow} from 'date-fns';
+import {formatTimeAgo} from '../../utils/formatTime';
 import {getMockPost, getMockComments, MockPost, MockComment} from '../../services/mockData';
 import SimpleIcon from '../../components/SimpleIcon';
 
@@ -98,7 +98,7 @@ const PostDetailScreen: React.FC<PostDetailScreenProps> = ({route, navigation}) 
             <View style={styles.headerInfo}>
               <Text style={[styles.displayName, {color: theme.colors.text}]}>{post.displayName}</Text>
               <Text style={[styles.subtitle, {color: theme.colors.muted}]}>
-                @{post.username} · {formatDistanceToNow(new Date(post.createdAt), {addSuffix: true})}
+                @{post.username} · {formatTimeAgo(post.createdAt)}
               </Text>
             </View>
             <TouchableOpacity style={styles.menuButton}>
@@ -189,7 +189,7 @@ const PostDetailScreen: React.FC<PostDetailScreenProps> = ({route, navigation}) 
                       @{comment.username}
                     </Text>
                     <Text style={[styles.commentTime, {color: theme.colors.muted}]}>
-                      · {formatDistanceToNow(new Date(comment.createdAt), {addSuffix: true})}
+                      · {formatTimeAgo(comment.createdAt)}
                     </Text>
                   </View>
                   <Text style={[styles.commentText, {color: theme.colors.text}]}>{comment.content}</Text>

@@ -9,7 +9,7 @@ import {Post} from '../store/slices/feedSlice';
 import {spacing, lightTheme, darkTheme} from '../theme';
 import {useAppDispatch} from '../store';
 import {likePost, unlikePost} from '../store/slices/feedSlice';
-import {formatDistanceToNow} from 'date-fns';
+import {formatTimeAgo} from '../utils/formatTime';
 import {useNavigation} from '@react-navigation/native';
 import SimpleIcon from './SimpleIcon';
 
@@ -53,7 +53,7 @@ const PostCard: React.FC<PostCardProps> = ({post}) => {
               {post.displayName}
             </Text>
             <Text style={[styles.subtitle, {color: theme.colors.muted}]}>
-              @{post.username} · {formatDistanceToNow(new Date(post.createdAt), {addSuffix: true})}
+              @{post.username} · {formatTimeAgo(post.createdAt)}
             </Text>
           </View>
         </TouchableOpacity>
