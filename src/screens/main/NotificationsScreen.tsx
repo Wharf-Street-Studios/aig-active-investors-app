@@ -9,7 +9,7 @@ import {spacing, lightTheme, darkTheme} from '../../theme';
 import {useAppSelector, useAppDispatch} from '../../store';
 import {fetchNotificationsStart, fetchNotificationsSuccess, markAllAsRead} from '../../store/slices/notificationSlice';
 import {useNavigation} from '@react-navigation/native';
-import {FavouriteIcon, CommentIcon, UserIcon, AlertIcon, MessageIcon} from '@hugeicons/react-native';
+import SimpleIcon from '../../components/SimpleIcon';
 
 const NotificationsScreen: React.FC = () => {
   const colorScheme = useColorScheme();
@@ -40,17 +40,17 @@ const NotificationsScreen: React.FC = () => {
   const getNotificationIcon = (type: string) => {
     switch (type) {
       case 'follow':
-        return <UserIcon size={24} color={theme.colors.primary} />;
+        return <SimpleIcon name="user" size={24} color={theme.colors.primary} />;
       case 'like':
-        return <FavouriteIcon size={24} color={theme.colors.error} />;
+        return <SimpleIcon name="heart" size={24} color={theme.colors.error} />;
       case 'comment':
-        return <CommentIcon size={24} color={theme.colors.primary} />;
+        return <SimpleIcon name="comment" size={24} color={theme.colors.primary} />;
       case 'mention':
-        return <AlertIcon size={24} color={theme.colors.primary} />;
+        return <SimpleIcon name="bell" size={24} color={theme.colors.primary} />;
       case 'message':
-        return <MessageIcon size={24} color={theme.colors.primary} />;
+        return <SimpleIcon name="comment" size={24} color={theme.colors.primary} />;
       default:
-        return <AlertIcon size={24} color={theme.colors.primary} />;
+        return <SimpleIcon name="bell" size={24} color={theme.colors.primary} />;
     }
   };
 

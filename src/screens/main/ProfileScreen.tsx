@@ -8,7 +8,7 @@ import {View, StyleSheet, ScrollView, Text, TouchableOpacity, useColorScheme} fr
 import {spacing, lightTheme, darkTheme} from '../../theme';
 import {useAppSelector, useAppDispatch} from '../../store';
 import {logout} from '../../store/slices/authSlice';
-import {Setting02Icon, SecurityIcon, Notification02Icon, Bookmark01Icon, InformationCircleIcon, HelpCircleIcon, ChevronRightIcon} from '@hugeicons/react-native';
+import SimpleIcon from '../../components/SimpleIcon';
 
 interface ProfileScreenProps {
   navigation: any;
@@ -70,41 +70,41 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
           <Text style={[styles.menuTitle, {color: theme.colors.muted}]}>Settings</Text>
 
           <TouchableOpacity style={[styles.menuItem, {borderBottomColor: theme.colors.border}]}>
-            <Setting02Icon size={24} color={theme.colors.text} />
+            <SimpleIcon name="settings" size={24} color={theme.colors.text} />
             <Text style={[styles.menuItemText, {color: theme.colors.text}]}>Account Settings</Text>
-            <ChevronRightIcon size={20} color={theme.colors.muted} />
+            <SimpleIcon name="chevron-right" size={20} color={theme.colors.muted} />
           </TouchableOpacity>
 
           <TouchableOpacity style={[styles.menuItem, {borderBottomColor: theme.colors.border}]}>
-            <SecurityIcon size={24} color={theme.colors.text} />
+            <SimpleIcon name="settings" size={24} color={theme.colors.text} />
             <Text style={[styles.menuItemText, {color: theme.colors.text}]}>Privacy & Security</Text>
-            <ChevronRightIcon size={20} color={theme.colors.muted} />
+            <SimpleIcon name="chevron-right" size={20} color={theme.colors.muted} />
           </TouchableOpacity>
 
           <TouchableOpacity style={[styles.menuItem, {borderBottomColor: theme.colors.border}]}>
-            <Notification02Icon size={24} color={theme.colors.text} />
+            <SimpleIcon name="bell" size={24} color={theme.colors.text} />
             <Text style={[styles.menuItemText, {color: theme.colors.text}]}>Notifications</Text>
-            <ChevronRightIcon size={20} color={theme.colors.muted} />
+            <SimpleIcon name="chevron-right" size={20} color={theme.colors.muted} />
           </TouchableOpacity>
 
           <TouchableOpacity style={[styles.menuItem, {borderBottomColor: theme.colors.border}]}>
-            <Bookmark01Icon size={24} color={theme.colors.text} />
+            <SimpleIcon name="bookmark" size={24} color={theme.colors.text} />
             <Text style={[styles.menuItemText, {color: theme.colors.text}]}>Saved Posts</Text>
-            <ChevronRightIcon size={20} color={theme.colors.muted} />
+            <SimpleIcon name="chevron-right" size={20} color={theme.colors.muted} />
           </TouchableOpacity>
 
           <View style={[styles.divider, {backgroundColor: theme.colors.border}]} />
 
           <TouchableOpacity style={[styles.menuItem, {borderBottomColor: theme.colors.border}]}>
-            <HelpCircleIcon size={24} color={theme.colors.text} />
+            <SimpleIcon name="user" size={24} color={theme.colors.text} />
             <Text style={[styles.menuItemText, {color: theme.colors.text}]}>Help & Support</Text>
-            <ChevronRightIcon size={20} color={theme.colors.muted} />
+            <SimpleIcon name="chevron-right" size={20} color={theme.colors.muted} />
           </TouchableOpacity>
 
           <TouchableOpacity style={[styles.menuItem, {borderBottomColor: theme.colors.border}]}>
-            <InformationCircleIcon size={24} color={theme.colors.text} />
+            <SimpleIcon name="user" size={24} color={theme.colors.text} />
             <Text style={[styles.menuItemText, {color: theme.colors.text}]}>About</Text>
-            <ChevronRightIcon size={20} color={theme.colors.muted} />
+            <SimpleIcon name="chevron-right" size={20} color={theme.colors.muted} />
           </TouchableOpacity>
         </View>
 

@@ -8,7 +8,7 @@ import {View, StyleSheet, ScrollView, Text, TouchableOpacity, useColorScheme} fr
 import {spacing, lightTheme, darkTheme} from '../../theme';
 import {getMockUser, getMockPosts, MockUser, MockPost} from '../../services/mockData';
 import PostCard from '../../components/PostCard';
-import {CheckmarkBadge01Icon} from '@hugeicons/react-native';
+import SimpleIcon from '../../components/SimpleIcon';
 
 interface UserProfileScreenProps {
   route: {
@@ -71,7 +71,7 @@ const UserProfileScreen: React.FC<UserProfileScreenProps> = ({route}) => {
 
           {user.verificationStatus === 'verified' && (
             <View style={[styles.verifiedBadge, {backgroundColor: theme.colors.card, borderColor: theme.colors.border}]}>
-              <CheckmarkBadge01Icon size={16} color={theme.colors.primary} />
+              <SimpleIcon name="check" size={16} color={theme.colors.primary} />
               <Text style={[styles.verifiedText, {color: theme.colors.text}]}>Verified</Text>
             </View>
           )}

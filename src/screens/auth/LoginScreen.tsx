@@ -10,7 +10,7 @@ import {AuthStackParamList} from '../../navigation/AuthNavigator';
 import {spacing, lightTheme, darkTheme} from '../../theme';
 import {useAppDispatch} from '../../store';
 import {loginStart, loginSuccess, loginFailure} from '../../store/slices/authSlice';
-import {EyeIcon, ViewIcon} from '@hugeicons/react-native';
+import SimpleIcon from '../../components/SimpleIcon';
 
 type LoginScreenProps = {
   navigation: NativeStackNavigationProp<AuthStackParamList, 'Login'>;
@@ -117,11 +117,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
               <TouchableOpacity
                 onPress={() => setShowPassword(!showPassword)}
                 style={styles.eyeIcon}>
-                {showPassword ? (
-                  <ViewIcon size={20} color={theme.colors.muted} />
-                ) : (
-                  <EyeIcon size={20} color={theme.colors.muted} />
-                )}
+                <SimpleIcon name="eye" size={20} color={theme.colors.muted} />
               </TouchableOpacity>
             </View>
           </View>

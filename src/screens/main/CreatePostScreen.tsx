@@ -7,7 +7,7 @@ import React, {useState} from 'react';
 import {View, StyleSheet, ScrollView, Alert, Text, TextInput, TouchableOpacity, useColorScheme} from 'react-native';
 import {spacing, lightTheme, darkTheme} from '../../theme';
 import {useNavigation} from '@react-navigation/native';
-import {HashtagIcon, DollarCircleIcon} from '@hugeicons/react-native';
+import SimpleIcon from '../../components/SimpleIcon';
 
 interface CreatePostScreenProps {
   navigation: any;
@@ -143,7 +143,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({navigation}) => {
                   backgroundColor: theme.colors.card,
                   borderColor: theme.colors.border
                 }]}>
-                  <HashtagIcon size={14} color={theme.colors.text} />
+                  <SimpleIcon name="hashtag" size={14} color={theme.colors.text} />
                   <Text style={[styles.chipText, {color: theme.colors.text}]}>#{tag}</Text>
                 </View>
               ))}
@@ -152,7 +152,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({navigation}) => {
                   backgroundColor: theme.colors.card,
                   borderColor: theme.colors.border
                 }]}>
-                  <DollarCircleIcon size={14} color={theme.colors.text} />
+                  <SimpleIcon name="dollar" size={14} color={theme.colors.text} />
                   <Text style={[styles.chipText, {color: theme.colors.text}]}>${ticker}</Text>
                 </View>
               ))}
@@ -178,7 +178,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({navigation}) => {
                     backgroundColor: theme.colors.card,
                     borderColor: theme.colors.border
                   }]}>
-                  <HashtagIcon size={14} color={theme.colors.text} />
+                  <SimpleIcon name="hashtag" size={14} color={theme.colors.text} />
                   <Text style={[styles.chipText, {color: theme.colors.text}]}>#{tag}</Text>
                 </TouchableOpacity>
               ))}
@@ -198,7 +198,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({navigation}) => {
                     backgroundColor: theme.colors.card,
                     borderColor: theme.colors.border
                   }]}>
-                  <DollarCircleIcon size={14} color={theme.colors.text} />
+                  <SimpleIcon name="dollar" size={14} color={theme.colors.text} />
                   <Text style={[styles.chipText, {color: theme.colors.text}]}>${ticker}</Text>
                 </TouchableOpacity>
               ))}

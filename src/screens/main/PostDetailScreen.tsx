@@ -8,7 +8,7 @@ import {View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Text, Text
 import {spacing, lightTheme, darkTheme} from '../../theme';
 import {formatDistanceToNow} from 'date-fns';
 import {getMockPost, getMockComments, MockPost, MockComment} from '../../services/mockData';
-import {MoreVerticalIcon, FavouriteIcon, CommentIcon, Share08Icon, Bookmark01Icon} from '@hugeicons/react-native';
+import SimpleIcon from '../../components/SimpleIcon';
 
 interface PostDetailScreenProps {
   route: {
@@ -102,7 +102,7 @@ const PostDetailScreen: React.FC<PostDetailScreenProps> = ({route, navigation}) 
               </Text>
             </View>
             <TouchableOpacity style={styles.menuButton}>
-              <MoreVerticalIcon size={20} color={theme.colors.muted} />
+              <SimpleIcon name="more" size={20} color={theme.colors.muted} />
             </TouchableOpacity>
           </View>
 
@@ -134,31 +134,31 @@ const PostDetailScreen: React.FC<PostDetailScreenProps> = ({route, navigation}) 
 
           <View style={styles.actions}>
             <TouchableOpacity onPress={handleLike} style={styles.actionButton}>
-              <FavouriteIcon
+              <SimpleIcon
+                name={isLiked ? 'heart' : 'heart-outline'}
                 size={20}
                 color={isLiked ? theme.colors.error : theme.colors.muted}
-                variant={isLiked ? 'solid' : 'stroke'}
               />
               <Text style={[styles.actionText, {color: theme.colors.text}]}>{likesCount}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.actionButton}>
-              <CommentIcon size={20} color={theme.colors.muted} />
+              <SimpleIcon name="comment" size={20} color={theme.colors.muted} />
               <Text style={[styles.actionText, {color: theme.colors.text}]}>{post.commentsCount}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.actionButton}>
-              <Share08Icon size={20} color={theme.colors.muted} />
+              <SimpleIcon name="share" size={20} color={theme.colors.muted} />
               <Text style={[styles.actionText, {color: theme.colors.text}]}>{post.sharesCount}</Text>
             </TouchableOpacity>
 
             <View style={{flex: 1}} />
 
             <TouchableOpacity onPress={handleSave}>
-              <Bookmark01Icon
+              <SimpleIcon
+                name={isSaved ? 'bookmark' : 'bookmark-outline'}
                 size={20}
                 color={isSaved ? theme.colors.primary : theme.colors.muted}
-                variant={isSaved ? 'solid' : 'stroke'}
               />
             </TouchableOpacity>
           </View>
@@ -195,10 +195,10 @@ const PostDetailScreen: React.FC<PostDetailScreenProps> = ({route, navigation}) 
                   <Text style={[styles.commentText, {color: theme.colors.text}]}>{comment.content}</Text>
                   <View style={styles.commentActions}>
                     <TouchableOpacity style={styles.commentAction}>
-                      <FavouriteIcon
+                      <SimpleIcon
+                        name={comment.isLiked ? 'heart' : 'heart-outline'}
                         size={16}
                         color={comment.isLiked ? theme.colors.error : theme.colors.muted}
-                        variant={comment.isLiked ? 'solid' : 'stroke'}
                       />
                       <Text style={[styles.commentActionText, {color: theme.colors.muted}]}>
                         {comment.likesCount}

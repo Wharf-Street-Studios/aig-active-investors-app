@@ -9,7 +9,7 @@ import {spacing, lightTheme, darkTheme} from '../../theme';
 import {useNavigation} from '@react-navigation/native';
 import {mockUsers, mockPosts} from '../../services/mockData';
 import PostCard from '../../components/PostCard';
-import {Search01Icon, HashtagIcon, DollarCircleIcon, CheckmarkBadge01Icon} from '@hugeicons/react-native';
+import SimpleIcon from '../../components/SimpleIcon';
 
 const SearchScreen: React.FC = () => {
   const colorScheme = useColorScheme();
@@ -96,7 +96,7 @@ const SearchScreen: React.FC = () => {
     <View style={[styles.container, {backgroundColor: theme.colors.background}]}>
       <View style={[styles.header, {backgroundColor: theme.colors.card}]}>
         <View style={[styles.searchbar, {backgroundColor: theme.colors.background, borderColor: theme.colors.border}]}>
-          <Search01Icon size={20} color={theme.colors.muted} />
+          <SimpleIcon name="search" size={20} color={theme.colors.muted} />
           <TextInput
             placeholder="Search users, posts, #hashtags, $tickers"
             onChangeText={setSearchQuery}
@@ -120,25 +120,25 @@ const SearchScreen: React.FC = () => {
               <TouchableOpacity
                 onPress={() => setSearchQuery('#investing')}
                 style={[styles.chip, {backgroundColor: theme.colors.card, borderColor: theme.colors.border}]}>
-                <HashtagIcon size={16} color={theme.colors.text} />
+                <SimpleIcon name="hashtag" size={16} color={theme.colors.text} />
                 <Text style={[styles.chipText, {color: theme.colors.text}]}>#investing</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => setSearchQuery('#stocks')}
                 style={[styles.chip, {backgroundColor: theme.colors.card, borderColor: theme.colors.border}]}>
-                <HashtagIcon size={16} color={theme.colors.text} />
+                <SimpleIcon name="hashtag" size={16} color={theme.colors.text} />
                 <Text style={[styles.chipText, {color: theme.colors.text}]}>#stocks</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => setSearchQuery('$AAPL')}
                 style={[styles.chip, {backgroundColor: theme.colors.card, borderColor: theme.colors.border}]}>
-                <DollarCircleIcon size={16} color={theme.colors.text} />
+                <SimpleIcon name="dollar" size={16} color={theme.colors.text} />
                 <Text style={[styles.chipText, {color: theme.colors.text}]}>$AAPL</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => setSearchQuery('$MSFT')}
                 style={[styles.chip, {backgroundColor: theme.colors.card, borderColor: theme.colors.border}]}>
-                <DollarCircleIcon size={16} color={theme.colors.text} />
+                <SimpleIcon name="dollar" size={16} color={theme.colors.text} />
                 <Text style={[styles.chipText, {color: theme.colors.text}]}>$MSFT</Text>
               </TouchableOpacity>
             </View>
@@ -172,7 +172,7 @@ const SearchScreen: React.FC = () => {
                       <Text style={[styles.userHandle, {color: theme.colors.muted}]}>@{user.username}</Text>
                     </View>
                     {user.verificationStatus === 'verified' && (
-                      <CheckmarkBadge01Icon size={20} color={theme.colors.primary} />
+                      <SimpleIcon name="check" size={20} color={theme.colors.primary} />
                     )}
                   </TouchableOpacity>
                 ))}
@@ -192,7 +192,7 @@ const SearchScreen: React.FC = () => {
                       key={tag}
                       onPress={() => handleHashtagPress(tag)}
                       style={[styles.chip, {backgroundColor: theme.colors.card, borderColor: theme.colors.border}]}>
-                      <HashtagIcon size={16} color={theme.colors.text} />
+                      <SimpleIcon name="hashtag" size={16} color={theme.colors.text} />
                       <Text style={[styles.chipText, {color: theme.colors.text}]}>#{tag}</Text>
                     </TouchableOpacity>
                   ))}
@@ -213,7 +213,7 @@ const SearchScreen: React.FC = () => {
                       key={ticker}
                       onPress={() => handleTickerPress(ticker)}
                       style={[styles.chip, {backgroundColor: theme.colors.card, borderColor: theme.colors.border}]}>
-                      <DollarCircleIcon size={16} color={theme.colors.text} />
+                      <SimpleIcon name="dollar" size={16} color={theme.colors.text} />
                       <Text style={[styles.chipText, {color: theme.colors.text}]}>${ticker}</Text>
                     </TouchableOpacity>
                   ))}

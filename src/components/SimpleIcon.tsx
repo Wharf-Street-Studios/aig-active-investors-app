@@ -27,6 +27,14 @@ const iconMap: {[key: string]: string} = {
   'more': '⋮',
   'dollar': '💲',
   'hashtag': '#',
+  'eye': '👁️',
+  'back': '←',
+  'check': '✓',
+  'send': '✉️',
+  'edit': '✏️',
+  'logout': '🚪',
+  'settings': '⚙️',
+  'chevron-right': '›',
 };
 
 const SimpleIcon: React.FC<SimpleIconProps> = ({name, size = 24, color}) => {
