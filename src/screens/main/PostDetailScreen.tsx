@@ -4,11 +4,11 @@
  */
 
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform} from 'react-native';
-import {Text, Card, Avatar, IconButton, useTheme, TextInput, Button, Divider} from 'react-native-paper';
-import {spacing} from '../../theme';
+import {View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Text, TextInput, TouchableOpacity, useColorScheme, Image} from 'react-native';
+import {spacing, lightTheme, darkTheme} from '../../theme';
 import {formatDistanceToNow} from 'date-fns';
 import {getMockPost, getMockComments, MockPost, MockComment} from '../../services/mockData';
+import {MoreVerticalIcon, FavouriteIcon, CommentIcon, Share08Icon, Bookmark01Icon} from '@hugeicons/react-native';
 
 interface PostDetailScreenProps {
   route: {
@@ -20,7 +20,8 @@ interface PostDetailScreenProps {
 }
 
 const PostDetailScreen: React.FC<PostDetailScreenProps> = ({route, navigation}) => {
-  const theme = useTheme();
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === 'dark' ? darkTheme : lightTheme;
   const {postId} = route.params;
   const [post, setPost] = useState<MockPost | undefined>();
   const [comments, setComments] = useState<MockComment[]>([]);
@@ -76,7 +77,7 @@ const PostDetailScreen: React.FC<PostDetailScreenProps> = ({route, navigation}) 
   if (!post) {
     return (
       <View style={[styles.container, {backgroundColor: theme.colors.background}]}>
-        <Text>Post not found</Text>
+        <Text style={[styles.errorText, {color: theme.colors.text}]}>Post not found</Text>
       </View>
     );
   }
@@ -87,31 +88,33 @@ const PostDetailScreen: React.FC<PostDetailScreenProps> = ({route, navigation}) 
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Post Card */}
-        <Card style={styles.postCard}>
-          <Card.Title
-            title={post.displayName}
-            subtitle={`@${post.username} · ${formatDistanceToNow(new Date(post.createdAt), {addSuffix: true})}`}
-            left={props => (
-              <Avatar.Image
-                {...props}
-                size={40}
-                source={{uri: post.profilePicture || 'https://via.placeholder.com/40'}}
-              />
-            )}
-            right={props => <IconButton {...props} icon="dots-vertical" />}
-          />
-          <Card.Content>
-            <Text variant="bodyLarge" style={styles.postContent}>
+        <View style={[styles.postCard, {backgroundColor: theme.colors.card, borderColor: theme.colors.border}]}>
+          <View style={styles.postHeader}>
+            <View style={[styles.avatar, {backgroundColor: theme.colors.muted}]}>
+              <Text style={[styles.avatarText, {color: theme.colors.background}]}>
+                {post.displayName.charAt(0)}
+              </Text>
+            </View>
+            <View style={styles.headerInfo}>
+              <Text style={[styles.displayName, {color: theme.colors.text}]}>{post.displayName}</Text>
+              <Text style={[styles.subtitle, {color: theme.colors.muted}]}>
+                @{post.username} · {formatDistanceToNow(new Date(post.createdAt), {addSuffix: true})}
+              </Text>
+            </View>
+            <TouchableOpacity style={styles.menuButton}>
+              <MoreVerticalIcon size={20} color={theme.colors.muted} />
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.postBody}>
+            <Text style={[styles.postContent, {color: theme.colors.text}]}>
               {post.content}
             </Text>
 
             {post.hashtags && post.hashtags.length > 0 && (
-              <View style={styles.hashtagContainer}>
+              <View style={styles.tagsRow}>
                 {post.hashtags.map((tag, index) => (
-                  <Text
-                    key={index}
-                    variant="bodySmall"
-                    style={[styles.hashtag, {color: theme.colors.primary}]}>
+                  <Text key={index} style={[styles.hashtag, {color: theme.colors.primary}]}>
                     #{tag}
                   </Text>
                 ))}
@@ -119,111 +122,126 @@ const PostDetailScreen: React.FC<PostDetailScreenProps> = ({route, navigation}) 
             )}
 
             {post.tickers && post.tickers.length > 0 && (
-              <View style={styles.tickerContainer}>
+              <View style={styles.tagsRow}>
                 {post.tickers.map((ticker, index) => (
-                  <Text
-                    key={index}
-                    variant="bodySmall"
-                    style={[styles.ticker, {color: theme.colors.secondary}]}>
+                  <Text key={index} style={[styles.ticker, {color: theme.colors.primary}]}>
                     ${ticker}
                   </Text>
                 ))}
               </View>
             )}
-          </Card.Content>
+          </View>
 
-          <Card.Actions style={styles.actions}>
-            <View style={styles.actionButton}>
-              <IconButton
-                icon={isLiked ? 'heart' : 'heart-outline'}
+          <View style={styles.actions}>
+            <TouchableOpacity onPress={handleLike} style={styles.actionButton}>
+              <FavouriteIcon
                 size={20}
-                onPress={handleLike}
-                iconColor={isLiked ? theme.colors.error : undefined}
+                color={isLiked ? theme.colors.error : theme.colors.muted}
+                variant={isLiked ? 'solid' : 'stroke'}
               />
-              <Text variant="bodySmall">{likesCount}</Text>
-            </View>
+              <Text style={[styles.actionText, {color: theme.colors.text}]}>{likesCount}</Text>
+            </TouchableOpacity>
 
-            <View style={styles.actionButton}>
-              <IconButton icon="comment-outline" size={20} />
-              <Text variant="bodySmall">{post.commentsCount}</Text>
-            </View>
+            <TouchableOpacity style={styles.actionButton}>
+              <CommentIcon size={20} color={theme.colors.muted} />
+              <Text style={[styles.actionText, {color: theme.colors.text}]}>{post.commentsCount}</Text>
+            </TouchableOpacity>
 
-            <View style={styles.actionButton}>
-              <IconButton icon="share-outline" size={20} />
-              <Text variant="bodySmall">{post.sharesCount}</Text>
-            </View>
+            <TouchableOpacity style={styles.actionButton}>
+              <Share08Icon size={20} color={theme.colors.muted} />
+              <Text style={[styles.actionText, {color: theme.colors.text}]}>{post.sharesCount}</Text>
+            </TouchableOpacity>
 
-            <IconButton
-              icon={isSaved ? 'bookmark' : 'bookmark-outline'}
-              size={20}
-              onPress={handleSave}
-              iconColor={isSaved ? theme.colors.primary : undefined}
-            />
-          </Card.Actions>
-        </Card>
+            <View style={{flex: 1}} />
 
-        <Divider style={styles.divider} />
+            <TouchableOpacity onPress={handleSave}>
+              <Bookmark01Icon
+                size={20}
+                color={isSaved ? theme.colors.primary : theme.colors.muted}
+                variant={isSaved ? 'solid' : 'stroke'}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={[styles.divider, {backgroundColor: theme.colors.border}]} />
 
         {/* Comments Section */}
         <View style={styles.commentsSection}>
-          <Text variant="titleMedium" style={styles.commentsTitle}>
+          <Text style={[styles.commentsTitle, {color: theme.colors.text}]}>
             Comments ({comments.length})
           </Text>
 
           {comments.map((comment, index) => (
             <View key={comment.id}>
               <View style={styles.comment}>
-                <Avatar.Image
-                  size={32}
-                  source={{uri: comment.profilePicture || 'https://via.placeholder.com/32'}}
-                />
+                <View style={[styles.commentAvatar, {backgroundColor: theme.colors.muted}]}>
+                  <Text style={[styles.commentAvatarText, {color: theme.colors.background}]}>
+                    {comment.displayName.charAt(0)}
+                  </Text>
+                </View>
                 <View style={styles.commentContent}>
                   <View style={styles.commentHeader}>
-                    <Text variant="labelMedium" style={styles.commentAuthor}>
+                    <Text style={[styles.commentAuthor, {color: theme.colors.text}]}>
                       {comment.displayName}
                     </Text>
-                    <Text variant="bodySmall" style={styles.commentUsername}>
+                    <Text style={[styles.commentUsername, {color: theme.colors.muted}]}>
                       @{comment.username}
                     </Text>
-                    <Text variant="bodySmall" style={styles.commentTime}>
+                    <Text style={[styles.commentTime, {color: theme.colors.muted}]}>
                       · {formatDistanceToNow(new Date(comment.createdAt), {addSuffix: true})}
                     </Text>
                   </View>
-                  <Text variant="bodyMedium">{comment.content}</Text>
+                  <Text style={[styles.commentText, {color: theme.colors.text}]}>{comment.content}</Text>
                   <View style={styles.commentActions}>
-                    <IconButton
-                      icon={comment.isLiked ? 'heart' : 'heart-outline'}
-                      size={16}
-                      iconColor={comment.isLiked ? theme.colors.error : undefined}
-                    />
-                    <Text variant="bodySmall">{comment.likesCount}</Text>
+                    <TouchableOpacity style={styles.commentAction}>
+                      <FavouriteIcon
+                        size={16}
+                        color={comment.isLiked ? theme.colors.error : theme.colors.muted}
+                        variant={comment.isLiked ? 'solid' : 'stroke'}
+                      />
+                      <Text style={[styles.commentActionText, {color: theme.colors.muted}]}>
+                        {comment.likesCount}
+                      </Text>
+                    </TouchableOpacity>
                   </View>
                 </View>
               </View>
-              {index < comments.length - 1 && <Divider style={styles.commentDivider} />}
+              {index < comments.length - 1 && (
+                <View style={[styles.commentDivider, {backgroundColor: theme.colors.border}]} />
+              )}
             </View>
           ))}
         </View>
       </ScrollView>
 
       {/* Comment Input */}
-      <View style={[styles.commentInputContainer, {backgroundColor: theme.colors.surface}]}>
+      <View style={[styles.commentInputContainer, {backgroundColor: theme.colors.card, borderTopColor: theme.colors.border}]}>
         <TextInput
-          mode="outlined"
           placeholder="Write a comment..."
           value={commentText}
           onChangeText={setCommentText}
-          style={styles.commentInput}
+          style={[styles.commentInput, {
+            borderColor: theme.colors.border,
+            color: theme.colors.text,
+            backgroundColor: theme.colors.background,
+          }]}
+          placeholderTextColor={theme.colors.muted}
           multiline
           maxLength={280}
         />
-        <Button
-          mode="contained"
+        <TouchableOpacity
           onPress={handlePostComment}
           disabled={!commentText.trim()}
-          style={styles.postButton}>
-          Post
-        </Button>
+          style={[styles.postButton, {
+            backgroundColor: !commentText.trim() ? theme.colors.muted : theme.colors.primary,
+          }]}>
+          <Text style={[styles.postButtonText, {
+            color: theme.dark ? theme.colors.background : theme.colors.background,
+          }]}>
+            Post
+          </Text>
+        </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
   );
@@ -239,44 +257,86 @@ const styles = StyleSheet.create({
   postCard: {
     marginHorizontal: spacing.md,
     marginTop: spacing.md,
+    borderRadius: 8,
+    borderWidth: 1,
+    padding: spacing.md,
+  },
+  postHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: spacing.md,
+  },
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  headerInfo: {
+    flex: 1,
+    marginLeft: spacing.sm,
+  },
+  displayName: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  subtitle: {
+    fontSize: 12,
+    marginTop: 2,
+  },
+  menuButton: {
+    padding: spacing.xs,
+  },
+  postBody: {
+    marginBottom: spacing.md,
   },
   postContent: {
+    fontSize: 16,
+    lineHeight: 22,
     marginBottom: spacing.sm,
   },
-  hashtagContainer: {
+  tagsRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: spacing.sm,
     marginTop: spacing.sm,
   },
   hashtag: {
+    fontSize: 14,
     fontWeight: '600',
   },
-  tickerContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.sm,
-    marginTop: spacing.sm,
-  },
   ticker: {
+    fontSize: 14,
     fontWeight: '600',
   },
   actions: {
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingTop: spacing.sm,
+    gap: spacing.md,
   },
   actionButton: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.xs,
   },
+  actionText: {
+    fontSize: 12,
+  },
   divider: {
+    height: 1,
     marginVertical: spacing.md,
   },
   commentsSection: {
     paddingHorizontal: spacing.md,
   },
   commentsTitle: {
+    fontSize: 18,
     marginBottom: spacing.md,
     fontWeight: 'bold',
   },
@@ -284,6 +344,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingVertical: spacing.sm,
     gap: spacing.sm,
+  },
+  commentAvatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  commentAvatarText: {
+    fontSize: 14,
+    fontWeight: 'bold',
   },
   commentContent: {
     flex: 1,
@@ -295,20 +366,33 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
   },
   commentAuthor: {
+    fontSize: 14,
     fontWeight: 'bold',
   },
   commentUsername: {
-    opacity: 0.6,
+    fontSize: 12,
   },
   commentTime: {
-    opacity: 0.6,
+    fontSize: 12,
+  },
+  commentText: {
+    fontSize: 14,
   },
   commentActions: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: spacing.xs,
   },
+  commentAction: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+  },
+  commentActionText: {
+    fontSize: 12,
+  },
   commentDivider: {
+    height: 1,
     marginLeft: 44,
   },
   commentInputContainer: {
@@ -316,12 +400,30 @@ const styles = StyleSheet.create({
     padding: spacing.md,
     gap: spacing.sm,
     alignItems: 'flex-end',
+    borderTopWidth: 1,
   },
   commentInput: {
     flex: 1,
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: spacing.sm,
+    fontSize: 14,
+    maxHeight: 100,
   },
   postButton: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: 6,
     alignSelf: 'flex-end',
+  },
+  postButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  errorText: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: spacing.xl,
   },
 });
 

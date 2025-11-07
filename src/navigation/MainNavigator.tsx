@@ -5,8 +5,9 @@
 
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {MaterialCommunityIcons} from '@expo/vector-icons';
-import {useTheme} from 'react-native-paper';
+import {useColorScheme} from 'react-native';
+import {Home01Icon, Search01Icon, PlusSignIcon, Notification02Icon, UserIcon} from '@hugeicons/react-native';
+import {lightTheme, darkTheme} from '../theme';
 
 import HomeScreen from '../screens/main/HomeScreen';
 import SearchScreen from '../screens/main/SearchScreen';
@@ -25,17 +26,19 @@ export type MainTabParamList = {
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 const MainNavigator: React.FC = () => {
-  const theme = useTheme();
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === 'dark' ? darkTheme : lightTheme;
 
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: theme.colors.primary,
-        tabBarInactiveTintColor: theme.colors.onSurfaceVariant,
+        tabBarInactiveTintColor: theme.colors.muted,
         tabBarStyle: {
-          backgroundColor: theme.colors.surface,
-          borderTopColor: theme.colors.surfaceVariant,
+          backgroundColor: theme.colors.card,
+          borderTopColor: theme.colors.border,
+          borderTopWidth: 1,
         },
       }}>
       <Tab.Screen
@@ -44,7 +47,7 @@ const MainNavigator: React.FC = () => {
         options={{
           tabBarLabel: 'Home',
           tabBarIcon: ({color, size}) => (
-            <MaterialCommunityIcons name="home" size={size} color={color} />
+            <Home01Icon size={size} color={color} />
           ),
         }}
       />
@@ -54,7 +57,7 @@ const MainNavigator: React.FC = () => {
         options={{
           tabBarLabel: 'Search',
           tabBarIcon: ({color, size}) => (
-            <MaterialCommunityIcons name="magnify" size={size} color={color} />
+            <Search01Icon size={size} color={color} />
           ),
         }}
       />
@@ -64,11 +67,7 @@ const MainNavigator: React.FC = () => {
         options={{
           tabBarLabel: 'Post',
           tabBarIcon: ({color, size}) => (
-            <MaterialCommunityIcons
-              name="plus-circle"
-              size={size}
-              color={color}
-            />
+            <PlusSignIcon size={size} color={color} />
           ),
         }}
       />
@@ -78,7 +77,7 @@ const MainNavigator: React.FC = () => {
         options={{
           tabBarLabel: 'Alerts',
           tabBarIcon: ({color, size}) => (
-            <MaterialCommunityIcons name="bell" size={size} color={color} />
+            <Notification02Icon size={size} color={color} />
           ),
         }}
       />
@@ -88,7 +87,7 @@ const MainNavigator: React.FC = () => {
         options={{
           tabBarLabel: 'Profile',
           tabBarIcon: ({color, size}) => (
-            <MaterialCommunityIcons name="account" size={size} color={color} />
+            <UserIcon size={size} color={color} />
           ),
         }}
       />

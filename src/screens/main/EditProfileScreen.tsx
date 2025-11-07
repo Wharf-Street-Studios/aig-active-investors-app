@@ -4,9 +4,8 @@
  */
 
 import React, {useState} from 'react';
-import {View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform} from 'react-native';
-import {Text, Avatar, Button, TextInput, useTheme} from 'react-native-paper';
-import {spacing} from '../../theme';
+import {View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Text, TextInput, TouchableOpacity, useColorScheme} from 'react-native';
+import {spacing, lightTheme, darkTheme} from '../../theme';
 import {useAppSelector, useAppDispatch} from '../../store';
 
 interface EditProfileScreenProps {
@@ -14,7 +13,8 @@ interface EditProfileScreenProps {
 }
 
 const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
-  const theme = useTheme();
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === 'dark' ? darkTheme : lightTheme;
   const dispatch = useAppDispatch();
   const {user} = useAppSelector(state => state.auth);
 
@@ -45,99 +45,142 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Profile Picture */}
         <View style={styles.avatarContainer}>
-          <Avatar.Text size={100} label={displayName?.charAt(0) || 'U'} />
-          <Button mode="text" style={styles.changePhotoButton}>
-            Change Photo
-          </Button>
+          <View style={[styles.avatar, {backgroundColor: theme.colors.muted}]}>
+            <Text style={[styles.avatarText, {color: theme.colors.background}]}>
+              {displayName?.charAt(0) || 'U'}
+            </Text>
+          </View>
+          <TouchableOpacity style={styles.changePhotoButton}>
+            <Text style={[styles.changePhotoText, {color: theme.colors.primary}]}>
+              Change Photo
+            </Text>
+          </TouchableOpacity>
         </View>
 
         {/* Form Fields */}
         <View style={styles.formContainer}>
-          <TextInput
-            label="Display Name"
-            value={displayName}
-            onChangeText={setDisplayName}
-            mode="outlined"
-            style={styles.input}
-          />
+          <View style={styles.inputContainer}>
+            <Text style={[styles.label, {color: theme.colors.text}]}>Display Name</Text>
+            <TextInput
+              value={displayName}
+              onChangeText={setDisplayName}
+              style={[styles.input, {
+                borderColor: theme.colors.border,
+                color: theme.colors.text,
+                backgroundColor: theme.colors.background,
+              }]}
+              placeholderTextColor={theme.colors.muted}
+            />
+          </View>
 
-          <TextInput
-            label="Username"
-            value={username}
-            onChangeText={setUsername}
-            mode="outlined"
-            style={styles.input}
-            autoCapitalize="none"
-            left={<TextInput.Affix text="@" />}
-          />
+          <View style={styles.inputContainer}>
+            <Text style={[styles.label, {color: theme.colors.text}]}>Username</Text>
+            <View style={[styles.input, {
+              borderColor: theme.colors.border,
+              backgroundColor: theme.colors.background,
+              flexDirection: 'row',
+              alignItems: 'center',
+            }]}>
+              <Text style={[styles.prefix, {color: theme.colors.muted}]}>@</Text>
+              <TextInput
+                value={username}
+                onChangeText={setUsername}
+                style={[styles.usernameInput, {color: theme.colors.text}]}
+                placeholderTextColor={theme.colors.muted}
+                autoCapitalize="none"
+              />
+            </View>
+          </View>
 
-          <TextInput
-            label="Email"
-            value={email}
-            onChangeText={setEmail}
-            mode="outlined"
-            style={styles.input}
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
+          <View style={styles.inputContainer}>
+            <Text style={[styles.label, {color: theme.colors.text}]}>Email</Text>
+            <TextInput
+              value={email}
+              onChangeText={setEmail}
+              style={[styles.input, {
+                borderColor: theme.colors.border,
+                color: theme.colors.text,
+                backgroundColor: theme.colors.background,
+              }]}
+              placeholderTextColor={theme.colors.muted}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+          </View>
 
-          <TextInput
-            label="Bio"
-            value={bio}
-            onChangeText={setBio}
-            mode="outlined"
-            style={styles.input}
-            multiline
-            numberOfLines={4}
-            maxLength={160}
-          />
-          <Text variant="bodySmall" style={styles.charCount}>
-            {bio.length}/160
-          </Text>
+          <View style={styles.inputContainer}>
+            <Text style={[styles.label, {color: theme.colors.text}]}>Bio</Text>
+            <TextInput
+              value={bio}
+              onChangeText={setBio}
+              style={[styles.input, styles.bioInput, {
+                borderColor: theme.colors.border,
+                color: theme.colors.text,
+                backgroundColor: theme.colors.background,
+              }]}
+              placeholderTextColor={theme.colors.muted}
+              multiline
+              numberOfLines={4}
+              maxLength={160}
+            />
+            <Text style={[styles.charCount, {color: theme.colors.muted}]}>
+              {bio.length}/160
+            </Text>
+          </View>
 
           <View style={styles.actionButtons}>
-            <Button
-              mode="outlined"
+            <TouchableOpacity
               onPress={handleCancel}
-              style={styles.cancelButton}
+              style={[styles.cancelButton, {borderColor: theme.colors.border}]}
               disabled={isSaving}>
-              Cancel
-            </Button>
-            <Button
-              mode="contained"
+              <Text style={[styles.cancelButtonText, {color: theme.colors.text}]}>
+                Cancel
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
               onPress={handleSave}
-              style={styles.saveButton}
-              loading={isSaving}
+              style={[styles.saveButton, {
+                backgroundColor: isSaving ? theme.colors.muted : theme.colors.primary,
+              }]}
               disabled={isSaving}>
-              Save Changes
-            </Button>
+              <Text style={[styles.saveButtonText, {
+                color: theme.dark ? theme.colors.background : theme.colors.background,
+              }]}>
+                {isSaving ? 'Saving...' : 'Save Changes'}
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
 
         {/* Additional Settings */}
         <View style={styles.additionalSettings}>
-          <Text variant="titleMedium" style={styles.sectionTitle}>
+          <Text style={[styles.sectionTitle, {color: theme.colors.text}]}>
             Profile Settings
           </Text>
 
-          <Button mode="outlined" style={styles.settingButton}>
-            Change Password
-          </Button>
+          <TouchableOpacity style={[styles.settingButton, {borderColor: theme.colors.border}]}>
+            <Text style={[styles.settingButtonText, {color: theme.colors.text}]}>
+              Change Password
+            </Text>
+          </TouchableOpacity>
 
-          <Button mode="outlined" style={styles.settingButton}>
-            Privacy Settings
-          </Button>
+          <TouchableOpacity style={[styles.settingButton, {borderColor: theme.colors.border}]}>
+            <Text style={[styles.settingButtonText, {color: theme.colors.text}]}>
+              Privacy Settings
+            </Text>
+          </TouchableOpacity>
 
-          <Button mode="outlined" style={styles.settingButton}>
-            Verification Request
-          </Button>
+          <TouchableOpacity style={[styles.settingButton, {borderColor: theme.colors.border}]}>
+            <Text style={[styles.settingButtonText, {color: theme.colors.text}]}>
+              Verification Request
+            </Text>
+          </TouchableOpacity>
 
-          <Button
-            mode="outlined"
-            style={[styles.settingButton, {borderColor: theme.colors.error}]}
-            textColor={theme.colors.error}>
-            Delete Account
-          </Button>
+          <TouchableOpacity style={[styles.settingButton, {borderColor: theme.colors.error}]}>
+            <Text style={[styles.settingButtonText, {color: theme.colors.error}]}>
+              Delete Account
+            </Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -155,20 +198,59 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: spacing.xl,
   },
+  avatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarText: {
+    fontSize: 40,
+    fontWeight: 'bold',
+  },
   changePhotoButton: {
     marginTop: spacing.sm,
+    padding: spacing.xs,
+  },
+  changePhotoText: {
+    fontSize: 14,
+    fontWeight: '600',
   },
   formContainer: {
     marginBottom: spacing.xl,
   },
-  input: {
+  inputContainer: {
     marginBottom: spacing.md,
+  },
+  label: {
+    fontSize: 14,
+    marginBottom: spacing.xs,
+    fontWeight: '500',
+  },
+  input: {
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: spacing.md,
+    fontSize: 16,
+  },
+  prefix: {
+    fontSize: 16,
+    paddingRight: spacing.xs,
+  },
+  usernameInput: {
+    flex: 1,
+    fontSize: 16,
+    padding: 0,
+  },
+  bioInput: {
+    minHeight: 100,
+    textAlignVertical: 'top',
   },
   charCount: {
     textAlign: 'right',
-    opacity: 0.6,
-    marginTop: -spacing.sm,
-    marginBottom: spacing.lg,
+    fontSize: 12,
+    marginTop: spacing.xs,
   },
   actionButtons: {
     flexDirection: 'row',
@@ -177,19 +259,42 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     flex: 1,
+    padding: spacing.md,
+    borderRadius: 8,
+    borderWidth: 1,
+    alignItems: 'center',
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
   },
   saveButton: {
     flex: 1,
+    padding: spacing.md,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  saveButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
   },
   additionalSettings: {
     marginTop: spacing.lg,
   },
   sectionTitle: {
+    fontSize: 18,
     marginBottom: spacing.md,
     fontWeight: 'bold',
   },
   settingButton: {
+    padding: spacing.md,
+    borderRadius: 8,
+    borderWidth: 1,
+    alignItems: 'center',
     marginBottom: spacing.sm,
+  },
+  settingButtonText: {
+    fontSize: 16,
   },
 });
 

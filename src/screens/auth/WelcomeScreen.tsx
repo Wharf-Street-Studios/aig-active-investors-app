@@ -4,50 +4,50 @@
  */
 
 import React from 'react';
-import {View, StyleSheet, Image} from 'react-native';
-import {Text, Button, useTheme} from 'react-native-paper';
+import {View, StyleSheet, Text, TouchableOpacity, useColorScheme} from 'react-native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AuthStackParamList} from '../../navigation/AuthNavigator';
-import {spacing} from '../../theme';
+import {spacing, lightTheme, darkTheme} from '../../theme';
 
 type WelcomeScreenProps = {
   navigation: NativeStackNavigationProp<AuthStackParamList, 'Welcome'>;
 };
 
 const WelcomeScreen: React.FC<WelcomeScreenProps> = ({navigation}) => {
-  const theme = useTheme();
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === 'dark' ? darkTheme : lightTheme;
 
   return (
     <View style={[styles.container, {backgroundColor: theme.colors.background}]}>
       <View style={styles.content}>
         <View style={styles.logoContainer}>
-          <Text variant="displayLarge" style={[styles.title, {color: theme.colors.primary}]}>
+          <Text style={[styles.title, {color: theme.colors.text}]}>
             AIG
           </Text>
-          <Text variant="titleMedium" style={styles.subtitle}>
+          <Text style={[styles.subtitle, {color: theme.colors.text}]}>
             Active Investors Group
           </Text>
         </View>
-        <Text variant="bodyLarge" style={styles.tagline}>
+        <Text style={[styles.tagline, {color: theme.colors.muted}]}>
           Connect, Share, and Grow Your Investment Knowledge
         </Text>
       </View>
 
       <View style={styles.buttonContainer}>
-        <Button
-          mode="contained"
+        <TouchableOpacity
           onPress={() => navigation.navigate('Register')}
-          style={styles.button}
-          contentStyle={styles.buttonContent}>
-          Get Started
-        </Button>
-        <Button
-          mode="outlined"
+          style={[styles.button, {backgroundColor: theme.colors.primary}]}>
+          <Text style={[styles.buttonText, {color: theme.colors.background}]}>
+            Get Started
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
           onPress={() => navigation.navigate('Login')}
-          style={styles.button}
-          contentStyle={styles.buttonContent}>
-          Sign In
-        </Button>
+          style={[styles.buttonOutline, {borderColor: theme.colors.border}]}>
+          <Text style={[styles.buttonText, {color: theme.colors.text}]}>
+            Sign In
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -76,14 +76,13 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xs,
   },
   subtitle: {
-    fontWeight: '400',
+    fontSize: 16,
     textAlign: 'center',
-    opacity: 0.8,
     letterSpacing: 0.5,
   },
   tagline: {
+    fontSize: 14,
     textAlign: 'center',
-    opacity: 0.6,
     paddingHorizontal: spacing.xl,
     marginTop: spacing.md,
   },
@@ -91,10 +90,19 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   button: {
-    borderRadius: 12,
+    padding: spacing.md,
+    alignItems: 'center',
+    borderRadius: 4,
   },
-  buttonContent: {
-    paddingVertical: spacing.sm,
+  buttonOutline: {
+    padding: spacing.md,
+    alignItems: 'center',
+    borderRadius: 4,
+    borderWidth: 1,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
 

@@ -4,15 +4,16 @@
  */
 
 import React, {useEffect} from 'react';
-import {View, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
-import {Text, List, Avatar, useTheme, Badge} from 'react-native-paper';
-import {spacing} from '../../theme';
+import {View, StyleSheet, FlatList, TouchableOpacity, Text, useColorScheme} from 'react-native';
+import {spacing, lightTheme, darkTheme} from '../../theme';
 import {useAppSelector, useAppDispatch} from '../../store';
 import {fetchNotificationsStart, fetchNotificationsSuccess, markAllAsRead} from '../../store/slices/notificationSlice';
 import {useNavigation} from '@react-navigation/native';
+import {FavouriteIcon, CommentIcon, UserIcon, AlertIcon, MessageIcon} from '@hugeicons/react-native';
 
 const NotificationsScreen: React.FC = () => {
-  const theme = useTheme();
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === 'dark' ? darkTheme : lightTheme;
   const dispatch = useAppDispatch();
   const navigation = useNavigation<any>();
   const {notifications, unreadCount} = useAppSelector(state => state.notification);
@@ -39,17 +40,17 @@ const NotificationsScreen: React.FC = () => {
   const getNotificationIcon = (type: string) => {
     switch (type) {
       case 'follow':
-        return 'account-plus';
+        return <UserIcon size={24} color={theme.colors.primary} />;
       case 'like':
-        return 'heart';
+        return <FavouriteIcon size={24} color={theme.colors.error} />;
       case 'comment':
-        return 'comment';
+        return <CommentIcon size={24} color={theme.colors.primary} />;
       case 'mention':
-        return 'at';
+        return <AlertIcon size={24} color={theme.colors.primary} />;
       case 'message':
-        return 'message';
+        return <MessageIcon size={24} color={theme.colors.primary} />;
       default:
-        return 'bell';
+        return <AlertIcon size={24} color={theme.colors.primary} />;
     }
   };
 
@@ -74,7 +75,7 @@ const NotificationsScreen: React.FC = () => {
 
   const renderEmpty = () => (
     <View style={styles.emptyContainer}>
-      <Text variant="bodyLarge" style={styles.emptyText}>
+      <Text style={[styles.emptyText, {color: theme.colors.muted}]}>
         No notifications yet
       </Text>
     </View>
@@ -82,34 +83,40 @@ const NotificationsScreen: React.FC = () => {
 
   return (
     <View style={[styles.container, {backgroundColor: theme.colors.background}]}>
-      <View style={[styles.header, {backgroundColor: theme.colors.surface}]}>
-        <Text variant="headlineMedium" style={styles.title}>
+      <View style={[styles.header, {backgroundColor: theme.colors.card}]}>
+        <Text style={[styles.title, {color: theme.colors.text}]}>
           Notifications
         </Text>
         {unreadCount > 0 && (
-          <Badge style={styles.badge}>{unreadCount}</Badge>
+          <View style={[styles.badge, {backgroundColor: theme.colors.error}]}>
+            <Text style={styles.badgeText}>{unreadCount}</Text>
+          </View>
         )}
       </View>
 
       <FlatList
         data={notifications}
         renderItem={({item}) => (
-          <TouchableOpacity onPress={() => handleNotificationPress(item)}>
-            <List.Item
-              title={item.displayName || item.username}
-              description={item.message}
-              left={props => (
-                <Avatar.Icon
-                  {...props}
-                  icon={getNotificationIcon(item.type)}
-                  size={40}
-                />
-              )}
-              style={[
-                styles.listItem,
-                !item.isRead && {backgroundColor: theme.colors.surfaceVariant},
-              ]}
-            />
+          <TouchableOpacity
+            onPress={() => handleNotificationPress(item)}
+            style={[
+              styles.listItem,
+              {
+                backgroundColor: !item.isRead ? theme.colors.card : 'transparent',
+                borderBottomColor: theme.colors.border,
+              },
+            ]}>
+            <View style={[styles.iconContainer, {backgroundColor: theme.colors.card}]}>
+              {getNotificationIcon(item.type)}
+            </View>
+            <View style={styles.content}>
+              <Text style={[styles.userName, {color: theme.colors.text}]}>
+                {item.displayName || item.username}
+              </Text>
+              <Text style={[styles.message, {color: theme.colors.text}]}>
+                {item.message}
+              </Text>
+            </View>
           </TouchableOpacity>
         )}
         keyExtractor={item => item.id}
@@ -131,22 +138,52 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   title: {
+    fontSize: 24,
     fontWeight: 'bold',
   },
   badge: {
-    position: 'absolute',
-    top: spacing.xl,
-    right: spacing.md,
+    minWidth: 24,
+    height: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: spacing.xs,
+  },
+  badgeText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: 'bold',
   },
   listItem: {
-    paddingVertical: spacing.sm,
+    flexDirection: 'row',
+    padding: spacing.md,
+    borderBottomWidth: 1,
+    gap: spacing.md,
+  },
+  iconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  content: {
+    flex: 1,
+  },
+  userName: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: spacing.xs,
+  },
+  message: {
+    fontSize: 14,
   },
   emptyContainer: {
     padding: spacing.xl,
     alignItems: 'center',
   },
   emptyText: {
-    opacity: 0.6,
+    fontSize: 16,
     textAlign: 'center',
   },
 });

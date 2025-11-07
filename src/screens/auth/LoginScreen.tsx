@@ -4,20 +4,21 @@
  */
 
 import React, {useState} from 'react';
-import {View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform} from 'react-native';
-import {Text, TextInput, Button, useTheme, Snackbar} from 'react-native-paper';
+import {View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Text, TextInput, TouchableOpacity, useColorScheme} from 'react-native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AuthStackParamList} from '../../navigation/AuthNavigator';
-import {spacing} from '../../theme';
+import {spacing, lightTheme, darkTheme} from '../../theme';
 import {useAppDispatch} from '../../store';
 import {loginStart, loginSuccess, loginFailure} from '../../store/slices/authSlice';
+import {EyeIcon, ViewIcon} from '@hugeicons/react-native';
 
 type LoginScreenProps = {
   navigation: NativeStackNavigationProp<AuthStackParamList, 'Login'>;
 };
 
 const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
-  const theme = useTheme();
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === 'dark' ? darkTheme : lightTheme;
   const dispatch = useAppDispatch();
 
   const [email, setEmail] = useState('');
@@ -71,76 +72,102 @@ const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
           {backgroundColor: theme.colors.background},
         ]}>
         <View style={styles.header}>
-          <Text variant="headlineLarge" style={styles.title}>
+          <Text style={[styles.title, {color: theme.colors.text}]}>
             Welcome Back
           </Text>
-          <Text variant="bodyMedium" style={styles.subtitle}>
+          <Text style={[styles.subtitle, {color: theme.colors.muted}]}>
             Sign in to continue
           </Text>
         </View>
 
         <View style={styles.form}>
-          <TextInput
-            label="Email"
-            value={email}
-            onChangeText={setEmail}
-            mode="outlined"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoComplete="email"
-            style={styles.input}
-          />
-          <TextInput
-            label="Password"
-            value={password}
-            onChangeText={setPassword}
-            mode="outlined"
-            secureTextEntry={!showPassword}
-            autoCapitalize="none"
-            autoComplete="password"
-            right={
-              <TextInput.Icon
-                icon={showPassword ? 'eye-off' : 'eye'}
-                onPress={() => setShowPassword(!showPassword)}
-              />
-            }
-            style={styles.input}
-          />
+          <View style={styles.inputContainer}>
+            <Text style={[styles.label, {color: theme.colors.text}]}>Email</Text>
+            <TextInput
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoComplete="email"
+              style={[styles.input, {
+                borderColor: theme.colors.border,
+                color: theme.colors.text,
+                backgroundColor: theme.colors.background,
+              }]}
+              placeholderTextColor={theme.colors.muted}
+            />
+          </View>
 
-          <Button
-            mode="text"
+          <View style={styles.inputContainer}>
+            <Text style={[styles.label, {color: theme.colors.text}]}>Password</Text>
+            <View style={styles.passwordContainer}>
+              <TextInput
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={!showPassword}
+                autoCapitalize="none"
+                autoComplete="password"
+                style={[styles.input, styles.passwordInput, {
+                  borderColor: theme.colors.border,
+                  color: theme.colors.text,
+                  backgroundColor: theme.colors.background,
+                }]}
+                placeholderTextColor={theme.colors.muted}
+              />
+              <TouchableOpacity
+                onPress={() => setShowPassword(!showPassword)}
+                style={styles.eyeIcon}>
+                {showPassword ? (
+                  <ViewIcon size={20} color={theme.colors.muted} />
+                ) : (
+                  <EyeIcon size={20} color={theme.colors.muted} />
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <TouchableOpacity
             onPress={() => navigation.navigate('ForgotPassword')}
             style={styles.forgotButton}>
-            Forgot Password?
-          </Button>
+            <Text style={[styles.forgotText, {color: theme.colors.primary}]}>
+              Forgot Password?
+            </Text>
+          </TouchableOpacity>
 
-          <Button
-            mode="contained"
+          <TouchableOpacity
             onPress={handleLogin}
-            loading={loading}
             disabled={loading}
-            style={styles.loginButton}>
-            Sign In
-          </Button>
+            style={[styles.loginButton, {
+              backgroundColor: loading ? theme.colors.muted : theme.colors.primary,
+            }]}>
+            <Text style={[styles.loginButtonText, {
+              color: theme.dark ? theme.colors.background : theme.colors.background,
+            }]}>
+              {loading ? 'Signing In...' : 'Sign In'}
+            </Text>
+          </TouchableOpacity>
 
           <View style={styles.registerContainer}>
-            <Text variant="bodyMedium">Don't have an account? </Text>
-            <Button
-              mode="text"
-              onPress={() => navigation.navigate('Register')}
-              compact>
-              Sign Up
-            </Button>
+            <Text style={[styles.registerText, {color: theme.colors.text}]}>
+              Don't have an account?{' '}
+            </Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+              <Text style={[styles.registerLink, {color: theme.colors.primary}]}>
+                Sign Up
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
 
-      <Snackbar
-        visible={!!error}
-        onDismiss={() => setError('')}
-        duration={3000}>
-        {error}
-      </Snackbar>
+      {error ? (
+        <View style={[styles.snackbar, {backgroundColor: theme.colors.error}]}>
+          <Text style={styles.snackbarText}>{error}</Text>
+          <TouchableOpacity onPress={() => setError('')}>
+            <Text style={styles.snackbarDismiss}>Dismiss</Text>
+          </TouchableOpacity>
+        </View>
+      ) : null}
     </KeyboardAvoidingView>
   );
 };
@@ -158,30 +185,91 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xl,
   },
   title: {
+    fontSize: 32,
     fontWeight: 'bold',
     marginBottom: spacing.sm,
   },
   subtitle: {
-    opacity: 0.7,
+    fontSize: 16,
   },
   form: {
     gap: spacing.md,
   },
+  inputContainer: {
+    marginBottom: spacing.sm,
+  },
+  label: {
+    fontSize: 14,
+    marginBottom: spacing.xs,
+    fontWeight: '500',
+  },
   input: {
-    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: spacing.md,
+    fontSize: 16,
+  },
+  passwordContainer: {
+    position: 'relative',
+  },
+  passwordInput: {
+    paddingRight: 48,
+  },
+  eyeIcon: {
+    position: 'absolute',
+    right: spacing.md,
+    top: spacing.md,
   },
   forgotButton: {
     alignSelf: 'flex-end',
+    padding: spacing.xs,
+  },
+  forgotText: {
+    fontSize: 14,
   },
   loginButton: {
     marginTop: spacing.md,
-    paddingVertical: spacing.xs,
+    padding: spacing.md,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  loginButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
   },
   registerContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: spacing.md,
+  },
+  registerText: {
+    fontSize: 14,
+  },
+  registerLink: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  snackbar: {
+    position: 'absolute',
+    bottom: spacing.lg,
+    left: spacing.md,
+    right: spacing.md,
+    padding: spacing.md,
+    borderRadius: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  snackbarText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    flex: 1,
+  },
+  snackbarDismiss: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '600',
   },
 });
 

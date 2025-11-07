@@ -4,9 +4,8 @@
  */
 
 import React, {useEffect} from 'react';
-import {View, StyleSheet, FlatList, RefreshControl} from 'react-native';
-import {Text, FAB, useTheme, Chip} from 'react-native-paper';
-import {spacing} from '../../theme';
+import {View, StyleSheet, FlatList, RefreshControl, Text, TouchableOpacity, useColorScheme} from 'react-native';
+import {spacing, lightTheme, darkTheme} from '../../theme';
 import {useAppSelector, useAppDispatch} from '../../store';
 import {
   fetchFeedStart,
@@ -17,7 +16,8 @@ import {
 import PostCard from '../../components/PostCard';
 
 const HomeScreen: React.FC = () => {
-  const theme = useTheme();
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === 'dark' ? darkTheme : lightTheme;
   const dispatch = useAppDispatch();
   const {posts, isLoading, isRefreshing, filter} = useAppSelector(
     state => state.feed,
@@ -44,36 +44,76 @@ const HomeScreen: React.FC = () => {
 
   const renderHeader = () => (
     <View style={styles.filterContainer}>
-      <Chip
-        selected={filter === 'home'}
+      <TouchableOpacity
         onPress={() => dispatch(setFilter('home'))}
-        style={styles.chip}>
-        For You
-      </Chip>
-      <Chip
-        selected={filter === 'following'}
+        style={[
+          styles.chip,
+          {
+            backgroundColor: filter === 'home' ? theme.colors.primary : theme.colors.card,
+            borderColor: theme.colors.border,
+          }
+        ]}>
+        <Text style={[
+          styles.chipText,
+          {color: filter === 'home' ? (theme.dark ? theme.colors.background : theme.colors.background) : theme.colors.text}
+        ]}>
+          For You
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
         onPress={() => dispatch(setFilter('following'))}
-        style={styles.chip}>
-        Following
-      </Chip>
-      <Chip
-        selected={filter === 'trending'}
+        style={[
+          styles.chip,
+          {
+            backgroundColor: filter === 'following' ? theme.colors.primary : theme.colors.card,
+            borderColor: theme.colors.border,
+          }
+        ]}>
+        <Text style={[
+          styles.chipText,
+          {color: filter === 'following' ? (theme.dark ? theme.colors.background : theme.colors.background) : theme.colors.text}
+        ]}>
+          Following
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
         onPress={() => dispatch(setFilter('trending'))}
-        style={styles.chip}>
-        Trending
-      </Chip>
-      <Chip
-        selected={filter === 'latest'}
+        style={[
+          styles.chip,
+          {
+            backgroundColor: filter === 'trending' ? theme.colors.primary : theme.colors.card,
+            borderColor: theme.colors.border,
+          }
+        ]}>
+        <Text style={[
+          styles.chipText,
+          {color: filter === 'trending' ? (theme.dark ? theme.colors.background : theme.colors.background) : theme.colors.text}
+        ]}>
+          Trending
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
         onPress={() => dispatch(setFilter('latest'))}
-        style={styles.chip}>
-        Latest
-      </Chip>
+        style={[
+          styles.chip,
+          {
+            backgroundColor: filter === 'latest' ? theme.colors.primary : theme.colors.card,
+            borderColor: theme.colors.border,
+          }
+        ]}>
+        <Text style={[
+          styles.chipText,
+          {color: filter === 'latest' ? (theme.dark ? theme.colors.background : theme.colors.background) : theme.colors.text}
+        ]}>
+          Latest
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 
   const renderEmpty = () => (
     <View style={styles.emptyContainer}>
-      <Text variant="bodyLarge" style={styles.emptyText}>
+      <Text style={[styles.emptyText, {color: theme.colors.muted}]}>
         No posts yet. Start following users or create your first post!
       </Text>
     </View>
@@ -81,8 +121,8 @@ const HomeScreen: React.FC = () => {
 
   return (
     <View style={[styles.container, {backgroundColor: theme.colors.background}]}>
-      <View style={[styles.header, {backgroundColor: theme.colors.surface, borderBottomColor: theme.colors.surfaceVariant}]}>
-        <Text variant="headlineSmall" style={[styles.title, {color: theme.colors.primary}]}>
+      <View style={[styles.header, {backgroundColor: theme.colors.card, borderBottomColor: theme.colors.border}]}>
+        <Text style={[styles.title, {color: theme.colors.primary}]}>
           AIG
         </Text>
       </View>
@@ -112,6 +152,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   title: {
+    fontSize: 24,
     fontWeight: '900',
     letterSpacing: 1,
   },
@@ -124,6 +165,13 @@ const styles = StyleSheet.create({
   },
   chip: {
     borderRadius: 20,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderWidth: 1,
+  },
+  chipText: {
+    fontSize: 14,
+    fontWeight: '500',
   },
   listContent: {
     paddingBottom: spacing.xl,
@@ -133,8 +181,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   emptyText: {
+    fontSize: 16,
     textAlign: 'center',
-    opacity: 0.6,
   },
 });
 

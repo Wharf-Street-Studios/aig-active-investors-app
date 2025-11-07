@@ -4,21 +4,22 @@
  */
 
 import React from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
-import {Card, Avatar, Text, IconButton, useTheme, Chip} from 'react-native-paper';
+import {View, StyleSheet, TouchableOpacity, Text, useColorScheme} from 'react-native';
 import {Post} from '../store/slices/feedSlice';
-import {spacing} from '../theme';
+import {spacing, lightTheme, darkTheme} from '../theme';
 import {useAppDispatch} from '../store';
 import {likePost, unlikePost} from '../store/slices/feedSlice';
 import {formatDistanceToNow} from 'date-fns';
 import {useNavigation} from '@react-navigation/native';
+import {MoreVerticalIcon, FavouriteIcon, CommentIcon, Share08Icon, Bookmark01Icon, HashtagIcon, DollarCircleIcon} from '@hugeicons/react-native';
 
 interface PostCardProps {
   post: Post;
 }
 
 const PostCard: React.FC<PostCardProps> = ({post}) => {
-  const theme = useTheme();
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === 'dark' ? darkTheme : lightTheme;
   const dispatch = useAppDispatch();
   const navigation = useNavigation<any>();
 
@@ -39,99 +40,97 @@ const PostCard: React.FC<PostCardProps> = ({post}) => {
   };
 
   return (
-    <Card style={styles.card} elevation={2}>
-      <Card.Title
-        title={
-          <Text variant="titleMedium" style={styles.displayName}>
-            {post.displayName}
-          </Text>
-        }
-        subtitle={
-          <Text variant="bodySmall" style={styles.subtitle}>
-            @{post.username} · {formatDistanceToNow(new Date(post.createdAt), {addSuffix: true})}
-          </Text>
-        }
-        left={props => (
-          <TouchableOpacity onPress={handleProfilePress}>
-            <Avatar.Image
-              {...props}
-              size={48}
-              source={{uri: post.profilePicture || 'https://via.placeholder.com/48'}}
-            />
-          </TouchableOpacity>
-        )}
-        right={props => <IconButton {...props} icon="dots-vertical" size={20} />}
-      />
+    <View style={[styles.card, {backgroundColor: theme.colors.card, borderColor: theme.colors.border}]}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={handleProfilePress} style={styles.profileSection}>
+          <View style={[styles.avatar, {backgroundColor: theme.colors.muted}]}>
+            <Text style={[styles.avatarText, {color: theme.colors.background}]}>
+              {post.displayName.charAt(0)}
+            </Text>
+          </View>
+          <View style={styles.headerInfo}>
+            <Text style={[styles.displayName, {color: theme.colors.text}]}>
+              {post.displayName}
+            </Text>
+            <Text style={[styles.subtitle, {color: theme.colors.muted}]}>
+              @{post.username} · {formatDistanceToNow(new Date(post.createdAt), {addSuffix: true})}
+            </Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuButton}>
+          <MoreVerticalIcon size={20} color={theme.colors.muted} />
+        </TouchableOpacity>
+      </View>
+
       <TouchableOpacity onPress={handlePostPress} activeOpacity={0.7}>
-        <Card.Content>
-          <Text variant="bodyLarge" style={styles.content}>{post.content}</Text>
+        <View style={styles.content}>
+          <Text style={[styles.contentText, {color: theme.colors.text}]}>
+            {post.content}
+          </Text>
 
           {((post.hashtags && post.hashtags.length > 0) || (post.tickers && post.tickers.length > 0)) && (
             <View style={styles.tagsContainer}>
               {post.tickers && post.tickers.length > 0 && post.tickers.map((ticker, index) => (
-                <Chip
+                <View
                   key={`ticker-${index}`}
-                  icon="currency-usd"
-                  style={[styles.tickerChip, {backgroundColor: theme.colors.secondaryContainer}]}
-                  textStyle={{color: theme.colors.onSecondaryContainer}}
-                  compact>
-                  {ticker}
-                </Chip>
+                  style={[styles.tag, {backgroundColor: theme.colors.background, borderColor: theme.colors.border}]}>
+                  <DollarCircleIcon size={12} color={theme.colors.primary} />
+                  <Text style={[styles.tagText, {color: theme.colors.primary}]}>
+                    {ticker}
+                  </Text>
+                </View>
               ))}
               {post.hashtags && post.hashtags.length > 0 && post.hashtags.map((tag, index) => (
-                <Chip
+                <View
                   key={`tag-${index}`}
-                  icon="pound"
-                  style={[styles.hashtagChip, {backgroundColor: theme.colors.primaryContainer}]}
-                  textStyle={{color: theme.colors.onPrimaryContainer}}
-                  compact>
-                  {tag}
-                </Chip>
+                  style={[styles.tag, {backgroundColor: theme.colors.background, borderColor: theme.colors.border}]}>
+                  <HashtagIcon size={12} color={theme.colors.primary} />
+                  <Text style={[styles.tagText, {color: theme.colors.primary}]}>
+                    {tag}
+                  </Text>
+                </View>
               ))}
             </View>
           )}
-        </Card.Content>
+        </View>
       </TouchableOpacity>
 
-      <Card.Actions style={styles.actions}>
+      <View style={styles.actions}>
         <TouchableOpacity onPress={handleLike} style={styles.actionButton}>
-          <IconButton
-            icon={post.isLiked ? 'heart' : 'heart-outline'}
+          <FavouriteIcon
             size={22}
-            iconColor={post.isLiked ? '#FF4458' : theme.colors.onSurfaceVariant}
-            style={styles.actionIcon}
+            color={post.isLiked ? '#FF4458' : theme.colors.muted}
+            variant={post.isLiked ? 'solid' : 'stroke'}
           />
-          <Text variant="labelLarge" style={styles.actionText}>{post.likesCount}</Text>
+          <Text style={[styles.actionText, {color: theme.colors.text}]}>
+            {post.likesCount}
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={handlePostPress} style={styles.actionButton}>
-          <IconButton
-            icon="comment-outline"
-            size={22}
-            iconColor={theme.colors.onSurfaceVariant}
-            style={styles.actionIcon}
-          />
-          <Text variant="labelLarge" style={styles.actionText}>{post.commentsCount}</Text>
+          <CommentIcon size={22} color={theme.colors.muted} />
+          <Text style={[styles.actionText, {color: theme.colors.text}]}>
+            {post.commentsCount}
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.actionButton}>
-          <IconButton
-            icon="share-outline"
-            size={22}
-            iconColor={theme.colors.onSurfaceVariant}
-            style={styles.actionIcon}
-          />
-          <Text variant="labelLarge" style={styles.actionText}>{post.sharesCount}</Text>
+          <Share08Icon size={22} color={theme.colors.muted} />
+          <Text style={[styles.actionText, {color: theme.colors.text}]}>
+            {post.sharesCount}
+          </Text>
         </TouchableOpacity>
 
         <View style={{flex: 1}} />
-        <IconButton
-          icon={post.isSaved ? 'bookmark' : 'bookmark-outline'}
-          size={22}
-          iconColor={post.isSaved ? theme.colors.primary : theme.colors.onSurfaceVariant}
-        />
-      </Card.Actions>
-    </Card>
+        <TouchableOpacity>
+          <Bookmark01Icon
+            size={22}
+            color={post.isSaved ? theme.colors.primary : theme.colors.muted}
+            variant={post.isSaved ? 'solid' : 'stroke'}
+          />
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 };
 
@@ -139,17 +138,52 @@ const styles = StyleSheet.create({
   card: {
     marginHorizontal: spacing.md,
     marginVertical: spacing.sm,
-    borderRadius: 16,
+    borderRadius: 8,
+    borderWidth: 1,
     overflow: 'hidden',
+    padding: spacing.md,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: spacing.md,
+  },
+  profileSection: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  avatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  headerInfo: {
+    flex: 1,
+    marginLeft: spacing.sm,
   },
   displayName: {
+    fontSize: 16,
     fontWeight: '700',
   },
   subtitle: {
-    opacity: 0.7,
-    marginTop: spacing.xs,
+    fontSize: 12,
+    marginTop: 2,
+  },
+  menuButton: {
+    padding: spacing.xs,
   },
   content: {
+    marginBottom: spacing.md,
+  },
+  contentText: {
+    fontSize: 16,
     lineHeight: 24,
   },
   tagsContainer: {
@@ -158,28 +192,33 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     marginTop: spacing.md,
   },
-  hashtagChip: {
+  tag: {
+    flexDirection: 'row',
+    alignItems: 'center',
     borderRadius: 8,
-  },
-  tickerChip: {
-    borderRadius: 8,
-  },
-  actions: {
     paddingHorizontal: spacing.sm,
     paddingVertical: spacing.xs,
-    justifyContent: 'flex-start',
+    gap: spacing.xs,
+    borderWidth: 1,
+  },
+  tagText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  actions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingTop: spacing.sm,
+    gap: spacing.md,
   },
   actionButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginRight: spacing.xs,
-  },
-  actionIcon: {
-    margin: 0,
+    gap: spacing.xs,
   },
   actionText: {
+    fontSize: 14,
     fontWeight: '600',
-    marginLeft: -spacing.sm,
   },
 });
 

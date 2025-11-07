@@ -4,17 +4,18 @@
  */
 
 import React, {useState} from 'react';
-import {View, StyleSheet, ScrollView, Alert} from 'react-native';
-import {TextInput, Button, useTheme, Text, Chip, Snackbar} from 'react-native-paper';
-import {spacing} from '../../theme';
+import {View, StyleSheet, ScrollView, Alert, Text, TextInput, TouchableOpacity, useColorScheme} from 'react-native';
+import {spacing, lightTheme, darkTheme} from '../../theme';
 import {useNavigation} from '@react-navigation/native';
+import {HashtagIcon, DollarCircleIcon} from '@hugeicons/react-native';
 
 interface CreatePostScreenProps {
   navigation: any;
 }
 
 const CreatePostScreen: React.FC<CreatePostScreenProps> = ({navigation}) => {
-  const theme = useTheme();
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === 'dark' ? darkTheme : lightTheme;
   const nav = useNavigation<any>();
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
@@ -86,20 +87,24 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({navigation}) => {
 
   return (
     <View style={[styles.container, {backgroundColor: theme.colors.background}]}>
-      <View style={[styles.header, {backgroundColor: theme.colors.surface}]}>
+      <View style={[styles.header, {backgroundColor: theme.colors.card}]}>
         <View style={styles.headerContent}>
-          <Button mode="text" onPress={handleCancel}>
-            Cancel
-          </Button>
-          <Text variant="titleMedium">Create Post</Text>
-          <Button
-            mode="contained"
+          <TouchableOpacity onPress={handleCancel} style={styles.headerButton}>
+            <Text style={[styles.headerButtonText, {color: theme.colors.text}]}>Cancel</Text>
+          </TouchableOpacity>
+          <Text style={[styles.headerTitle, {color: theme.colors.text}]}>Create Post</Text>
+          <TouchableOpacity
             onPress={handlePost}
-            loading={loading}
             disabled={!content.trim() || loading || charCount > maxChars}
-            compact>
-            Post
-          </Button>
+            style={[styles.postButton, {
+              backgroundColor: (!content.trim() || loading || charCount > maxChars) ? theme.colors.muted : theme.colors.primary
+            }]}>
+            <Text style={[styles.postButtonText, {
+              color: theme.dark ? theme.colors.background : theme.colors.background
+            }]}>
+              {loading ? 'Posting...' : 'Post'}
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -110,108 +115,106 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({navigation}) => {
           onChangeText={setContent}
           multiline
           numberOfLines={10}
-          mode="outlined"
-          style={styles.input}
+          style={[styles.input, {
+            borderColor: theme.colors.border,
+            color: theme.colors.text,
+            backgroundColor: theme.colors.background,
+          }]}
+          placeholderTextColor={theme.colors.muted}
           maxLength={maxChars}
         />
 
         <View style={styles.charCounter}>
-          <Text
-            variant="bodySmall"
-            style={[
-              styles.charCountText,
-              {color: charCount > maxChars ? theme.colors.error : theme.colors.onSurfaceVariant},
-            ]}>
+          <Text style={[styles.charCountText, {
+            color: charCount > maxChars ? theme.colors.error : theme.colors.muted
+          }]}>
             {charCount}/{maxChars}
           </Text>
         </View>
 
         {(hashtags.length > 0 || tickers.length > 0) && (
           <View style={styles.tagsContainer}>
-            <Text variant="titleSmall" style={styles.tagsTitle}>
+            <Text style={[styles.tagsTitle, {color: theme.colors.text}]}>
               Detected Tags:
             </Text>
             <View style={styles.tagsChips}>
               {hashtags.map((tag, index) => (
-                <Chip key={`hashtag-${index}`} icon="pound" style={styles.chip}>
-                  #{tag}
-                </Chip>
+                <View key={`hashtag-${index}`} style={[styles.chip, {
+                  backgroundColor: theme.colors.card,
+                  borderColor: theme.colors.border
+                }]}>
+                  <HashtagIcon size={14} color={theme.colors.text} />
+                  <Text style={[styles.chipText, {color: theme.colors.text}]}>#{tag}</Text>
+                </View>
               ))}
               {tickers.map((ticker, index) => (
-                <Chip key={`ticker-${index}`} icon="currency-usd" style={styles.chip}>
-                  ${ticker}
-                </Chip>
+                <View key={`ticker-${index}`} style={[styles.chip, {
+                  backgroundColor: theme.colors.card,
+                  borderColor: theme.colors.border
+                }]}>
+                  <DollarCircleIcon size={14} color={theme.colors.text} />
+                  <Text style={[styles.chipText, {color: theme.colors.text}]}>${ticker}</Text>
+                </View>
               ))}
             </View>
           </View>
         )}
 
         <View style={styles.suggestionsContainer}>
-          <Text variant="titleSmall" style={styles.suggestionsTitle}>
+          <Text style={[styles.suggestionsTitle, {color: theme.colors.text}]}>
             Quick Add:
           </Text>
 
           <View style={styles.section}>
-            <Text variant="bodySmall" style={styles.sectionLabel}>
+            <Text style={[styles.sectionLabel, {color: theme.colors.muted}]}>
               Popular Hashtags
             </Text>
             <View style={styles.suggestionsChips}>
-              <Chip
-                icon="pound"
-                style={styles.chip}
-                onPress={() => insertHashtag('investing')}>
-                #investing
-              </Chip>
-              <Chip icon="pound" style={styles.chip} onPress={() => insertHashtag('stocks')}>
-                #stocks
-              </Chip>
-              <Chip icon="pound" style={styles.chip} onPress={() => insertHashtag('trading')}>
-                #trading
-              </Chip>
-              <Chip icon="pound" style={styles.chip} onPress={() => insertHashtag('portfolio')}>
-                #portfolio
-              </Chip>
+              {['investing', 'stocks', 'trading', 'portfolio'].map(tag => (
+                <TouchableOpacity
+                  key={tag}
+                  onPress={() => insertHashtag(tag)}
+                  style={[styles.chip, {
+                    backgroundColor: theme.colors.card,
+                    borderColor: theme.colors.border
+                  }]}>
+                  <HashtagIcon size={14} color={theme.colors.text} />
+                  <Text style={[styles.chipText, {color: theme.colors.text}]}>#{tag}</Text>
+                </TouchableOpacity>
+              ))}
             </View>
           </View>
 
           <View style={styles.section}>
-            <Text variant="bodySmall" style={styles.sectionLabel}>
+            <Text style={[styles.sectionLabel, {color: theme.colors.muted}]}>
               Popular Tickers
             </Text>
             <View style={styles.suggestionsChips}>
-              <Chip
-                icon="currency-usd"
-                style={styles.chip}
-                onPress={() => insertTicker('AAPL')}>
-                $AAPL
-              </Chip>
-              <Chip
-                icon="currency-usd"
-                style={styles.chip}
-                onPress={() => insertTicker('MSFT')}>
-                $MSFT
-              </Chip>
-              <Chip icon="currency-usd" style={styles.chip} onPress={() => insertTicker('GOOGL')}>
-                $GOOGL
-              </Chip>
-              <Chip icon="currency-usd" style={styles.chip} onPress={() => insertTicker('TSLA')}>
-                $TSLA
-              </Chip>
+              {['AAPL', 'MSFT', 'GOOGL', 'TSLA'].map(ticker => (
+                <TouchableOpacity
+                  key={ticker}
+                  onPress={() => insertTicker(ticker)}
+                  style={[styles.chip, {
+                    backgroundColor: theme.colors.card,
+                    borderColor: theme.colors.border
+                  }]}>
+                  <DollarCircleIcon size={14} color={theme.colors.text} />
+                  <Text style={[styles.chipText, {color: theme.colors.text}]}>${ticker}</Text>
+                </TouchableOpacity>
+              ))}
             </View>
           </View>
         </View>
       </ScrollView>
 
-      <Snackbar
-        visible={showSuccess}
-        onDismiss={() => setShowSuccess(false)}
-        duration={2000}
-        action={{
-          label: 'View',
-          onPress: () => navigation.navigate('Home'),
-        }}>
-        Post created successfully!
-      </Snackbar>
+      {showSuccess && (
+        <View style={[styles.snackbar, {backgroundColor: theme.colors.success}]}>
+          <Text style={styles.snackbarText}>Post created successfully!</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+            <Text style={styles.snackbarAction}>View</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };
@@ -230,6 +233,25 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  headerButton: {
+    padding: spacing.xs,
+  },
+  headerButtonText: {
+    fontSize: 16,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  postButton: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    borderRadius: 6,
+  },
+  postButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
   content: {
     flex: 1,
     padding: spacing.md,
@@ -237,6 +259,10 @@ const styles = StyleSheet.create({
   input: {
     minHeight: 150,
     textAlignVertical: 'top',
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: spacing.md,
+    fontSize: 16,
   },
   charCounter: {
     alignItems: 'flex-end',
@@ -244,12 +270,13 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   charCountText: {
-    opacity: 0.7,
+    fontSize: 12,
   },
   tagsContainer: {
     marginBottom: spacing.md,
   },
   tagsTitle: {
+    fontSize: 14,
     marginBottom: spacing.sm,
     fontWeight: 'bold',
   },
@@ -262,6 +289,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.lg,
   },
   suggestionsTitle: {
+    fontSize: 14,
     marginBottom: spacing.md,
     fontWeight: 'bold',
   },
@@ -269,8 +297,8 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   sectionLabel: {
+    fontSize: 12,
     marginBottom: spacing.sm,
-    opacity: 0.7,
   },
   suggestionsChips: {
     flexDirection: 'row',
@@ -278,7 +306,38 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
   },
   chip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 16,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+    gap: spacing.xs,
+    borderWidth: 1,
     marginBottom: spacing.xs,
+  },
+  chipText: {
+    fontSize: 12,
+  },
+  snackbar: {
+    position: 'absolute',
+    bottom: spacing.lg,
+    left: spacing.md,
+    right: spacing.md,
+    padding: spacing.md,
+    borderRadius: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  snackbarText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    flex: 1,
+  },
+  snackbarAction: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '600',
   },
 });
 

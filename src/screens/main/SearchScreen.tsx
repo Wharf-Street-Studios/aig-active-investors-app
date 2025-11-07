@@ -4,15 +4,16 @@
  */
 
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, ScrollView, FlatList, TouchableOpacity} from 'react-native';
-import {Searchbar, Text, useTheme, List, Avatar, Chip, Divider} from 'react-native-paper';
-import {spacing} from '../../theme';
+import {View, StyleSheet, ScrollView, FlatList, TouchableOpacity, Text, TextInput, useColorScheme, Image} from 'react-native';
+import {spacing, lightTheme, darkTheme} from '../../theme';
 import {useNavigation} from '@react-navigation/native';
 import {mockUsers, mockPosts} from '../../services/mockData';
 import PostCard from '../../components/PostCard';
+import {Search01Icon, HashtagIcon, DollarCircleIcon, CheckmarkBadge01Icon} from '@hugeicons/react-native';
 
 const SearchScreen: React.FC = () => {
-  const theme = useTheme();
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === 'dark' ? darkTheme : lightTheme;
   const navigation = useNavigation<any>();
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<any>({
@@ -93,48 +94,58 @@ const SearchScreen: React.FC = () => {
 
   return (
     <View style={[styles.container, {backgroundColor: theme.colors.background}]}>
-      <View style={[styles.header, {backgroundColor: theme.colors.surface}]}>
-        <Searchbar
-          placeholder="Search users, posts, #hashtags, $tickers"
-          onChangeText={setSearchQuery}
-          value={searchQuery}
-          style={styles.searchbar}
-        />
+      <View style={[styles.header, {backgroundColor: theme.colors.card}]}>
+        <View style={[styles.searchbar, {backgroundColor: theme.colors.background, borderColor: theme.colors.border}]}>
+          <Search01Icon size={20} color={theme.colors.muted} />
+          <TextInput
+            placeholder="Search users, posts, #hashtags, $tickers"
+            onChangeText={setSearchQuery}
+            value={searchQuery}
+            style={[styles.searchInput, {color: theme.colors.text}]}
+            placeholderTextColor={theme.colors.muted}
+          />
+        </View>
       </View>
 
       <ScrollView style={styles.content}>
         {!searchQuery.trim() ? (
           <View style={styles.emptyState}>
-            <Text variant="bodyLarge" style={styles.placeholder}>
+            <Text style={[styles.placeholder, {color: theme.colors.muted}]}>
               Start typing to search...
             </Text>
             <View style={styles.suggestionsContainer}>
-              <Text variant="titleMedium" style={styles.suggestionsTitle}>
+              <Text style={[styles.suggestionsTitle, {color: theme.colors.text}]}>
                 Popular Searches
               </Text>
-              <Chip icon="pound" style={styles.chip} onPress={() => setSearchQuery('#investing')}>
-                #investing
-              </Chip>
-              <Chip icon="pound" style={styles.chip} onPress={() => setSearchQuery('#stocks')}>
-                #stocks
-              </Chip>
-              <Chip
-                icon="currency-usd"
-                style={styles.chip}
-                onPress={() => setSearchQuery('$AAPL')}>
-                $AAPL
-              </Chip>
-              <Chip
-                icon="currency-usd"
-                style={styles.chip}
-                onPress={() => setSearchQuery('$MSFT')}>
-                $MSFT
-              </Chip>
+              <TouchableOpacity
+                onPress={() => setSearchQuery('#investing')}
+                style={[styles.chip, {backgroundColor: theme.colors.card, borderColor: theme.colors.border}]}>
+                <HashtagIcon size={16} color={theme.colors.text} />
+                <Text style={[styles.chipText, {color: theme.colors.text}]}>#investing</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setSearchQuery('#stocks')}
+                style={[styles.chip, {backgroundColor: theme.colors.card, borderColor: theme.colors.border}]}>
+                <HashtagIcon size={16} color={theme.colors.text} />
+                <Text style={[styles.chipText, {color: theme.colors.text}]}>#stocks</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setSearchQuery('$AAPL')}
+                style={[styles.chip, {backgroundColor: theme.colors.card, borderColor: theme.colors.border}]}>
+                <DollarCircleIcon size={16} color={theme.colors.text} />
+                <Text style={[styles.chipText, {color: theme.colors.text}]}>$AAPL</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setSearchQuery('$MSFT')}
+                style={[styles.chip, {backgroundColor: theme.colors.card, borderColor: theme.colors.border}]}>
+                <DollarCircleIcon size={16} color={theme.colors.text} />
+                <Text style={[styles.chipText, {color: theme.colors.text}]}>$MSFT</Text>
+              </TouchableOpacity>
             </View>
           </View>
         ) : !hasResults ? (
           <View style={styles.emptyState}>
-            <Text variant="bodyLarge" style={styles.placeholder}>
+            <Text style={[styles.placeholder, {color: theme.colors.muted}]}>
               No results found for "{searchQuery}"
             </Text>
           </View>
@@ -143,75 +154,78 @@ const SearchScreen: React.FC = () => {
             {/* Users */}
             {searchResults.users.length > 0 && (
               <View style={styles.section}>
-                <Text variant="titleMedium" style={styles.sectionTitle}>
+                <Text style={[styles.sectionTitle, {color: theme.colors.text}]}>
                   Users ({searchResults.users.length})
                 </Text>
                 {searchResults.users.map((user: any) => (
-                  <TouchableOpacity key={user.id} onPress={() => handleUserPress(user.id)}>
-                    <List.Item
-                      title={user.displayName}
-                      description={`@${user.username}`}
-                      left={props => (
-                        <Avatar.Text {...props} size={40} label={user.displayName.charAt(0)} />
-                      )}
-                      right={props =>
-                        user.verificationStatus === 'verified' ? (
-                          <List.Icon {...props} icon="check-decagram" />
-                        ) : null
-                      }
-                    />
+                  <TouchableOpacity
+                    key={user.id}
+                    onPress={() => handleUserPress(user.id)}
+                    style={[styles.listItem, {borderBottomColor: theme.colors.border}]}>
+                    <View style={[styles.avatar, {backgroundColor: theme.colors.muted}]}>
+                      <Text style={[styles.avatarText, {color: theme.colors.background}]}>
+                        {user.displayName.charAt(0)}
+                      </Text>
+                    </View>
+                    <View style={styles.userInfo}>
+                      <Text style={[styles.userName, {color: theme.colors.text}]}>{user.displayName}</Text>
+                      <Text style={[styles.userHandle, {color: theme.colors.muted}]}>@{user.username}</Text>
+                    </View>
+                    {user.verificationStatus === 'verified' && (
+                      <CheckmarkBadge01Icon size={20} color={theme.colors.primary} />
+                    )}
                   </TouchableOpacity>
                 ))}
-                <Divider style={styles.divider} />
+                <View style={[styles.divider, {backgroundColor: theme.colors.border}]} />
               </View>
             )}
 
             {/* Hashtags */}
             {searchResults.hashtags.length > 0 && (
               <View style={styles.section}>
-                <Text variant="titleMedium" style={styles.sectionTitle}>
+                <Text style={[styles.sectionTitle, {color: theme.colors.text}]}>
                   Hashtags ({searchResults.hashtags.length})
                 </Text>
                 <View style={styles.chipsContainer}>
                   {searchResults.hashtags.map((tag: string) => (
-                    <Chip
+                    <TouchableOpacity
                       key={tag}
-                      icon="pound"
-                      style={styles.chip}
-                      onPress={() => handleHashtagPress(tag)}>
-                      #{tag}
-                    </Chip>
+                      onPress={() => handleHashtagPress(tag)}
+                      style={[styles.chip, {backgroundColor: theme.colors.card, borderColor: theme.colors.border}]}>
+                      <HashtagIcon size={16} color={theme.colors.text} />
+                      <Text style={[styles.chipText, {color: theme.colors.text}]}>#{tag}</Text>
+                    </TouchableOpacity>
                   ))}
                 </View>
-                <Divider style={styles.divider} />
+                <View style={[styles.divider, {backgroundColor: theme.colors.border}]} />
               </View>
             )}
 
             {/* Tickers */}
             {searchResults.tickers.length > 0 && (
               <View style={styles.section}>
-                <Text variant="titleMedium" style={styles.sectionTitle}>
+                <Text style={[styles.sectionTitle, {color: theme.colors.text}]}>
                   Tickers ({searchResults.tickers.length})
                 </Text>
                 <View style={styles.chipsContainer}>
                   {searchResults.tickers.map((ticker: string) => (
-                    <Chip
+                    <TouchableOpacity
                       key={ticker}
-                      icon="currency-usd"
-                      style={styles.chip}
-                      onPress={() => handleTickerPress(ticker)}>
-                      ${ticker}
-                    </Chip>
+                      onPress={() => handleTickerPress(ticker)}
+                      style={[styles.chip, {backgroundColor: theme.colors.card, borderColor: theme.colors.border}]}>
+                      <DollarCircleIcon size={16} color={theme.colors.text} />
+                      <Text style={[styles.chipText, {color: theme.colors.text}]}>${ticker}</Text>
+                    </TouchableOpacity>
                   ))}
                 </View>
-                <Divider style={styles.divider} />
+                <View style={[styles.divider, {backgroundColor: theme.colors.border}]} />
               </View>
             )}
 
             {/* Posts */}
             {searchResults.posts.length > 0 && (
               <View style={styles.section}>
-                <Text variant="titleMedium" style={styles.sectionTitle}>
+                <Text style={[styles.sectionTitle, {color: theme.colors.text}]}>
                   Posts ({searchResults.posts.length})
                 </Text>
                 {searchResults.posts.map((post: any) => (
@@ -235,7 +249,17 @@ const styles = StyleSheet.create({
     paddingTop: spacing.xl,
   },
   searchbar: {
-    elevation: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 8,
+    borderWidth: 1,
+    paddingHorizontal: spacing.md,
+    gap: spacing.sm,
+  },
+  searchInput: {
+    flex: 1,
+    padding: spacing.sm,
+    fontSize: 16,
   },
   content: {
     flex: 1,
@@ -247,15 +271,17 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
   },
   placeholder: {
-    opacity: 0.6,
+    fontSize: 16,
     textAlign: 'center',
     marginBottom: spacing.xl,
   },
   suggestionsContainer: {
     alignItems: 'center',
     marginTop: spacing.lg,
+    gap: spacing.sm,
   },
   suggestionsTitle: {
+    fontSize: 18,
     marginBottom: spacing.md,
     fontWeight: 'bold',
   },
@@ -265,7 +291,36 @@ const styles = StyleSheet.create({
   sectionTitle: {
     paddingHorizontal: spacing.md,
     marginBottom: spacing.sm,
+    fontSize: 18,
     fontWeight: 'bold',
+  },
+  listItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: spacing.md,
+    borderBottomWidth: 1,
+    gap: spacing.md,
+  },
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  userInfo: {
+    flex: 1,
+  },
+  userName: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  userHandle: {
+    fontSize: 14,
   },
   chipsContainer: {
     flexDirection: 'row',
@@ -274,9 +329,21 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   chip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 20,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    gap: spacing.xs,
+    borderWidth: 1,
     marginBottom: spacing.sm,
   },
+  chipText: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
   divider: {
+    height: 1,
     marginVertical: spacing.md,
   },
 });

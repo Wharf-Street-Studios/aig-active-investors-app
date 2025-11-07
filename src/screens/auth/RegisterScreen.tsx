@@ -4,18 +4,19 @@
  */
 
 import React, {useState} from 'react';
-import {View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform} from 'react-native';
-import {Text, TextInput, Button, useTheme, Snackbar} from 'react-native-paper';
+import {View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Text, TextInput, TouchableOpacity, useColorScheme} from 'react-native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AuthStackParamList} from '../../navigation/AuthNavigator';
-import {spacing} from '../../theme';
+import {spacing, lightTheme, darkTheme} from '../../theme';
+import {EyeIcon, ViewIcon} from '@hugeicons/react-native';
 
 type RegisterScreenProps = {
   navigation: NativeStackNavigationProp<AuthStackParamList, 'Register'>;
 };
 
 const RegisterScreen: React.FC<RegisterScreenProps> = ({navigation}) => {
-  const theme = useTheme();
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === 'dark' ? darkTheme : lightTheme;
 
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -59,82 +60,124 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({navigation}) => {
           {backgroundColor: theme.colors.background},
         ]}>
         <View style={styles.header}>
-          <Text variant="headlineLarge" style={styles.title}>
+          <Text style={[styles.title, {color: theme.colors.text}]}>
             Create Account
           </Text>
-          <Text variant="bodyMedium" style={styles.subtitle}>
+          <Text style={[styles.subtitle, {color: theme.colors.muted}]}>
             Join the investment community
           </Text>
         </View>
 
         <View style={styles.form}>
-          <TextInput
-            label="Username"
-            value={username}
-            onChangeText={setUsername}
-            mode="outlined"
-            autoCapitalize="none"
-            style={styles.input}
-          />
-          <TextInput
-            label="Email"
-            value={email}
-            onChangeText={setEmail}
-            mode="outlined"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoComplete="email"
-            style={styles.input}
-          />
-          <TextInput
-            label="Password"
-            value={password}
-            onChangeText={setPassword}
-            mode="outlined"
-            secureTextEntry={!showPassword}
-            autoCapitalize="none"
-            right={
-              <TextInput.Icon
-                icon={showPassword ? 'eye-off' : 'eye'}
-                onPress={() => setShowPassword(!showPassword)}
-              />
-            }
-            style={styles.input}
-          />
-          <TextInput
-            label="Confirm Password"
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-            mode="outlined"
-            secureTextEntry={!showPassword}
-            autoCapitalize="none"
-            style={styles.input}
-          />
+          <View style={styles.inputContainer}>
+            <Text style={[styles.label, {color: theme.colors.text}]}>Username</Text>
+            <TextInput
+              value={username}
+              onChangeText={setUsername}
+              autoCapitalize="none"
+              style={[styles.input, {
+                borderColor: theme.colors.border,
+                color: theme.colors.text,
+                backgroundColor: theme.colors.background,
+              }]}
+              placeholderTextColor={theme.colors.muted}
+            />
+          </View>
 
-          <Button
-            mode="contained"
+          <View style={styles.inputContainer}>
+            <Text style={[styles.label, {color: theme.colors.text}]}>Email</Text>
+            <TextInput
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoComplete="email"
+              style={[styles.input, {
+                borderColor: theme.colors.border,
+                color: theme.colors.text,
+                backgroundColor: theme.colors.background,
+              }]}
+              placeholderTextColor={theme.colors.muted}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={[styles.label, {color: theme.colors.text}]}>Password</Text>
+            <View style={styles.passwordContainer}>
+              <TextInput
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={!showPassword}
+                autoCapitalize="none"
+                style={[styles.input, styles.passwordInput, {
+                  borderColor: theme.colors.border,
+                  color: theme.colors.text,
+                  backgroundColor: theme.colors.background,
+                }]}
+                placeholderTextColor={theme.colors.muted}
+              />
+              <TouchableOpacity
+                onPress={() => setShowPassword(!showPassword)}
+                style={styles.eyeIcon}>
+                {showPassword ? (
+                  <ViewIcon size={20} color={theme.colors.muted} />
+                ) : (
+                  <EyeIcon size={20} color={theme.colors.muted} />
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={[styles.label, {color: theme.colors.text}]}>Confirm Password</Text>
+            <TextInput
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              secureTextEntry={!showPassword}
+              autoCapitalize="none"
+              style={[styles.input, {
+                borderColor: theme.colors.border,
+                color: theme.colors.text,
+                backgroundColor: theme.colors.background,
+              }]}
+              placeholderTextColor={theme.colors.muted}
+            />
+          </View>
+
+          <TouchableOpacity
             onPress={handleRegister}
-            loading={loading}
             disabled={loading}
-            style={styles.registerButton}>
-            Create Account
-          </Button>
+            style={[styles.registerButton, {
+              backgroundColor: loading ? theme.colors.muted : theme.colors.primary,
+            }]}>
+            <Text style={[styles.registerButtonText, {
+              color: theme.dark ? theme.colors.background : theme.colors.background,
+            }]}>
+              {loading ? 'Creating Account...' : 'Create Account'}
+            </Text>
+          </TouchableOpacity>
 
           <View style={styles.loginContainer}>
-            <Text variant="bodyMedium">Already have an account? </Text>
-            <Button mode="text" onPress={() => navigation.navigate('Login')} compact>
-              Sign In
-            </Button>
+            <Text style={[styles.loginText, {color: theme.colors.text}]}>
+              Already have an account?{' '}
+            </Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+              <Text style={[styles.loginLink, {color: theme.colors.primary}]}>
+                Sign In
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
 
-      <Snackbar
-        visible={!!error}
-        onDismiss={() => setError('')}
-        duration={3000}>
-        {error}
-      </Snackbar>
+      {error ? (
+        <View style={[styles.snackbar, {backgroundColor: theme.colors.error}]}>
+          <Text style={styles.snackbarText}>{error}</Text>
+          <TouchableOpacity onPress={() => setError('')}>
+            <Text style={styles.snackbarDismiss}>Dismiss</Text>
+          </TouchableOpacity>
+        </View>
+      ) : null}
     </KeyboardAvoidingView>
   );
 };
@@ -152,27 +195,84 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xl,
   },
   title: {
+    fontSize: 32,
     fontWeight: 'bold',
     marginBottom: spacing.sm,
   },
   subtitle: {
-    opacity: 0.7,
+    fontSize: 16,
   },
   form: {
     gap: spacing.md,
   },
+  inputContainer: {
+    marginBottom: spacing.sm,
+  },
+  label: {
+    fontSize: 14,
+    marginBottom: spacing.xs,
+    fontWeight: '500',
+  },
   input: {
-    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: spacing.md,
+    fontSize: 16,
+  },
+  passwordContainer: {
+    position: 'relative',
+  },
+  passwordInput: {
+    paddingRight: 48,
+  },
+  eyeIcon: {
+    position: 'absolute',
+    right: spacing.md,
+    top: spacing.md,
   },
   registerButton: {
     marginTop: spacing.md,
-    paddingVertical: spacing.xs,
+    padding: spacing.md,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  registerButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
   },
   loginContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: spacing.md,
+  },
+  loginText: {
+    fontSize: 14,
+  },
+  loginLink: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  snackbar: {
+    position: 'absolute',
+    bottom: spacing.lg,
+    left: spacing.md,
+    right: spacing.md,
+    padding: spacing.md,
+    borderRadius: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  snackbarText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    flex: 1,
+  },
+  snackbarDismiss: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '600',
   },
 });
 
