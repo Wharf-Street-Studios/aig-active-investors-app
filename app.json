@@ -29,6 +29,9 @@
     },
     "experiments": {
       "baseUrl": "/aig-active-investors-app"
-    }
+    },
+    "plugins": [
+      "expo-font"
+    ]
   }
 }
