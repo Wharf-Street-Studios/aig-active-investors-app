@@ -39,6 +39,9 @@ const MainNavigator: React.FC = () => {
           backgroundColor: theme.colors.card,
           borderTopColor: theme.colors.border,
           borderTopWidth: 1,
+          height: 80,
+          paddingBottom: 20,
+          paddingTop: 10,
         },
       }}>
       <Tab.Screen

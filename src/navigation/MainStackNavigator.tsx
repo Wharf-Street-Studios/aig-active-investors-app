@@ -42,14 +42,33 @@ const MainStackNavigator: React.FC = () => {
       screenOptions={{
         headerStyle: {
           backgroundColor: theme.colors.card,
+          height: 110,
         },
-        headerTintColor: theme.colors.primary,
+        headerTintColor: theme.colors.text,
         headerTitleStyle: {
           color: theme.colors.text,
+          fontWeight: '600',
+          fontSize: 18,
         },
         headerBackTitleVisible: false,
+        headerShadowVisible: false,
+        headerLeftContainerStyle: {
+          paddingLeft: 16,
+          paddingTop: 40,
+        },
+        headerRightContainerStyle: {
+          paddingRight: 16,
+          paddingTop: 40,
+        },
+        headerTitleContainerStyle: {
+          paddingTop: 40,
+        },
         headerTitle: ({children}) => (
-          <Text style={{fontSize: 18, fontWeight: '600', color: theme.colors.text}}>
+          <Text style={{
+            fontSize: 18,
+            fontWeight: '600',
+            color: theme.colors.text,
+          }}>
             {children}
           </Text>
         ),
