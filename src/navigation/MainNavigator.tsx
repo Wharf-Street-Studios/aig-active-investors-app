@@ -40,6 +40,10 @@ const MainNavigator: React.FC = () => {
           borderTopColor: theme.colors.border,
           borderTopWidth: 1,
         },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '600',
+        },
       }}>
       <Tab.Screen
         name="Home"

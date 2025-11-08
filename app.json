@@ -28,7 +28,7 @@
       "bundler": "metro"
     },
     "experiments": {
-      "baseUrl": "/aig-active-investors-app"
+      "baseUrl": "/AIG-Social-App"
     },
     "plugins": [
       "expo-font"

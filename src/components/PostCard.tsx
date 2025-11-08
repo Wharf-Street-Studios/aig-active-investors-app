@@ -11,7 +11,11 @@ import {useAppDispatch} from '../store';
 import {likePost, unlikePost} from '../store/slices/feedSlice';
 import {formatTimeAgo} from '../utils/formatTime';
 import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {MainStackParamList} from '../navigation/MainStackNavigator';
 import SimpleIcon from './SimpleIcon';
+
+type PostCardNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
 interface PostCardProps {
   post: Post;
@@ -21,7 +25,7 @@ const PostCard: React.FC<PostCardProps> = ({post}) => {
   const colorScheme = useColorScheme();
   const theme = colorScheme === 'dark' ? darkTheme : lightTheme;
   const dispatch = useAppDispatch();
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<PostCardNavigationProp>();
 
   const handleLike = () => {
     if (post.isLiked) {

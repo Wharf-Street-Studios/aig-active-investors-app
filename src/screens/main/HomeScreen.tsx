@@ -14,6 +14,7 @@ import {
   refreshFeedStart,
 } from '../../store/slices/feedSlice';
 import PostCard from '../../components/PostCard';
+import {getMockPosts} from '../../services/mockData';
 
 const HomeScreen: React.FC = () => {
   const colorScheme = useColorScheme();
@@ -31,8 +32,7 @@ const HomeScreen: React.FC = () => {
     dispatch(fetchFeedStart());
     // Using mock data for static app flow
     setTimeout(() => {
-      const mockData = require('../../services/mockData');
-      const posts = mockData.getMockPosts(filter);
+      const posts = getMockPosts(filter);
       dispatch(fetchFeedSuccess(posts));
     }, 500);
   };

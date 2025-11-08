@@ -24,15 +24,20 @@ export interface MockPost {
   displayName: string;
   profilePicture?: string;
   content: string;
-  hashtags?: string[];
-  tickers?: string[];
-  media?: Array<{type: 'image' | 'video'; url: string}>;
+  mediaUrls?: string[];
+  postType: 'text' | 'image' | 'video' | 'link' | 'poll';
+  category: string;
+  hashtags: string[];
+  mentionedUsers: string[];
+  tickers: string[];
   likesCount: number;
   commentsCount: number;
   sharesCount: number;
   isLiked: boolean;
   isSaved: boolean;
+  isEdited: boolean;
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface MockComment {
@@ -129,14 +134,19 @@ export const mockPosts: MockPost[] = [
     displayName: 'Warren Buffett Jr.',
     content:
       'Just added more shares to my $AAPL position. The fundamentals are too strong to ignore at this price point. Remember - be greedy when others are fearful! 📈',
+    postType: 'text',
+    category: 'stocks',
     hashtags: ['investing', 'stocks', 'valueinvesting'],
+    mentionedUsers: [],
     tickers: ['AAPL'],
     likesCount: 1243,
     commentsCount: 87,
     sharesCount: 34,
     isLiked: false,
     isSaved: false,
+    isEdited: false,
     createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
   },
   {
     id: '2',
@@ -145,14 +155,19 @@ export const mockPosts: MockPost[] = [
     displayName: 'Sarah Tech',
     content:
       'Amazing earnings from $MSFT today! Cloud revenue up 28% YoY. Azure is crushing it. This is why I stay long on tech 🚀',
+    postType: 'text',
+    category: 'stocks',
     hashtags: ['earnings', 'techstocks', 'microsoft'],
+    mentionedUsers: [],
     tickers: ['MSFT'],
     likesCount: 892,
     commentsCount: 56,
     sharesCount: 23,
     isLiked: true,
     isSaved: false,
+    isEdited: false,
     createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
   },
   {
     id: '3',
@@ -161,14 +176,19 @@ export const mockPosts: MockPost[] = [
     displayName: 'Mike Crypto',
     content:
       '$BTC breaking through resistance at $65k! The bull run is just getting started. Next stop: $100k 🎯',
+    postType: 'text',
+    category: 'crypto',
     hashtags: ['bitcoin', 'crypto', 'bullrun'],
+    mentionedUsers: [],
     tickers: ['BTC'],
     likesCount: 567,
     commentsCount: 123,
     sharesCount: 45,
     isLiked: false,
     isSaved: true,
+    isEdited: false,
     createdAt: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
   },
   {
     id: '4',
@@ -177,14 +197,19 @@ export const mockPosts: MockPost[] = [
     displayName: 'Dividend Dan',
     content:
       'Received $427 in dividends this month! $JNJ, $PG, $KO all paying out. Passive income is the best income 💰',
+    postType: 'text',
+    category: 'dividends',
     hashtags: ['dividends', 'passiveincome', 'financialfreedom'],
+    mentionedUsers: [],
     tickers: ['JNJ', 'PG', 'KO'],
     likesCount: 1567,
     commentsCount: 234,
     sharesCount: 67,
     isLiked: true,
     isSaved: true,
+    isEdited: false,
     createdAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
   },
   {
     id: '5',
@@ -193,14 +218,19 @@ export const mockPosts: MockPost[] = [
     displayName: 'Rachel Properties',
     content:
       'Just closed on my 4th rental property! $VNQ has been great, but nothing beats owning physical real estate. Cash flow positive from day one! 🏡',
+    postType: 'text',
+    category: 'realestate',
     hashtags: ['realestate', 'rentalproperty', 'investing'],
+    mentionedUsers: [],
     tickers: ['VNQ'],
     likesCount: 743,
     commentsCount: 98,
     sharesCount: 29,
     isLiked: false,
     isSaved: false,
+    isEdited: false,
     createdAt: new Date(Date.now() - 18 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 18 * 60 * 60 * 1000).toISOString(),
   },
   {
     id: '6',
@@ -209,13 +239,19 @@ export const mockPosts: MockPost[] = [
     displayName: 'Warren Buffett Jr.',
     content:
       'Market volatility is your friend, not your enemy. If you can\'t handle a 50% drawdown, you don\'t deserve the 100% gains. #investing101',
+    postType: 'text',
+    category: 'investing',
     hashtags: ['investing', 'marketvolatility', 'wisdom'],
+    mentionedUsers: [],
+    tickers: [],
     likesCount: 2134,
     commentsCount: 156,
     sharesCount: 89,
     isLiked: true,
     isSaved: false,
+    isEdited: false,
     createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
   },
   {
     id: '7',
@@ -224,14 +260,19 @@ export const mockPosts: MockPost[] = [
     displayName: 'Sarah Tech',
     content:
       'My portfolio breakdown: 40% $GOOGL, 30% $AMZN, 20% $NVDA, 10% cash. Heavy on tech? Yes. Sleeping well at night? Also yes. 😴',
+    postType: 'text',
+    category: 'portfolio',
     hashtags: ['portfolio', 'techstocks', 'investing'],
+    mentionedUsers: [],
     tickers: ['GOOGL', 'AMZN', 'NVDA'],
     likesCount: 645,
     commentsCount: 87,
     sharesCount: 34,
     isLiked: false,
     isSaved: false,
+    isEdited: false,
     createdAt: new Date(Date.now() - 36 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 36 * 60 * 60 * 1000).toISOString(),
   },
   {
     id: '8',
@@ -240,14 +281,19 @@ export const mockPosts: MockPost[] = [
     displayName: 'Mike Crypto',
     content:
       'DeFi update: Staking yields are looking juicy again. Getting 12% APY on $ETH. Traditional banks could never 🏦❌',
+    postType: 'text',
+    category: 'crypto',
     hashtags: ['defi', 'staking', 'ethereum'],
+    mentionedUsers: [],
     tickers: ['ETH'],
     likesCount: 423,
     commentsCount: 67,
     sharesCount: 21,
     isLiked: false,
     isSaved: false,
+    isEdited: false,
     createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
   },
 ];
 
