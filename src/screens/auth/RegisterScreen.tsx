@@ -9,6 +9,8 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AuthStackParamList} from '../../navigation/AuthNavigator';
 import {spacing, lightTheme, darkTheme} from '../../theme';
 import SimpleIcon from '../../components/SimpleIcon';
+import {useAppDispatch} from '../../store';
+import {loginStart, loginSuccess, loginFailure} from '../../store/slices/authSlice';
 
 type RegisterScreenProps = {
   navigation: NativeStackNavigationProp<AuthStackParamList, 'Register'>;
@@ -17,6 +19,7 @@ type RegisterScreenProps = {
 const RegisterScreen: React.FC<RegisterScreenProps> = ({navigation}) => {
   const colorScheme = useColorScheme();
   const theme = colorScheme === 'dark' ? darkTheme : lightTheme;
+  const dispatch = useAppDispatch();
 
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -43,11 +46,33 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({navigation}) => {
     }
 
     setLoading(true);
-    // TODO: Implement registration API call
-    setTimeout(() => {
+    dispatch(loginStart());
+
+    try {
+      // TODO: Replace with actual API call
+      // Simulate registration and auto-login
+      setTimeout(() => {
+        dispatch(
+          loginSuccess({
+            user: {
+              id: Date.now().toString(),
+              username,
+              email,
+              displayName: username,
+              verificationStatus: 'none',
+            },
+            token: 'dummy_token_' + Date.now(),
+            refreshToken: 'dummy_refresh_token_' + Date.now(),
+          }),
+        );
+        setLoading(false);
+        // Auto-login after successful registration
+      }, 1000);
+    } catch (err) {
       setLoading(false);
-      navigation.navigate('Login');
-    }, 1000);
+      dispatch(loginFailure('Registration failed. Please try again.'));
+      setError('Registration failed. Please try again.');
+    }
   };
 
   return (

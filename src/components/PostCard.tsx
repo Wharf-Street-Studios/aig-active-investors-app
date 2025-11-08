@@ -4,11 +4,11 @@
  */
 
 import React from 'react';
-import {View, StyleSheet, TouchableOpacity, Text, useColorScheme} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, Text, useColorScheme, Share, Alert} from 'react-native';
 import {Post} from '../store/slices/feedSlice';
 import {spacing, lightTheme, darkTheme} from '../theme';
 import {useAppDispatch} from '../store';
-import {likePost, unlikePost} from '../store/slices/feedSlice';
+import {likePost, unlikePost, savePost, unsavePost} from '../store/slices/feedSlice';
 import {formatTimeAgo} from '../utils/formatTime';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -32,6 +32,30 @@ const PostCard: React.FC<PostCardProps> = ({post}) => {
       dispatch(unlikePost(post.id));
     } else {
       dispatch(likePost(post.id));
+    }
+  };
+
+  const handleSave = () => {
+    if (post.isSaved) {
+      dispatch(unsavePost(post.id));
+    } else {
+      dispatch(savePost(post.id));
+    }
+  };
+
+  const handleShare = async () => {
+    try {
+      const result = await Share.share({
+        message: `Check out this post from @${post.username}: ${post.content.substring(0, 100)}${post.content.length > 100 ? '...' : ''}`,
+        url: `https://wharf-street-studios.github.io/AIG-Social-App/post/${post.id}`,
+      });
+
+      if (result.action === Share.sharedAction) {
+        // Post was shared successfully
+        console.log('Post shared');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to share post');
     }
   };
 
@@ -118,7 +142,7 @@ const PostCard: React.FC<PostCardProps> = ({post}) => {
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.actionButton}>
+        <TouchableOpacity onPress={handleShare} style={styles.actionButton}>
           <SimpleIcon name="share" size={22} color={theme.colors.muted} />
           <Text style={[styles.actionText, {color: theme.colors.text}]}>
             {post.sharesCount}
@@ -126,7 +150,7 @@ const PostCard: React.FC<PostCardProps> = ({post}) => {
         </TouchableOpacity>
 
         <View style={{flex: 1}} />
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleSave}>
           <SimpleIcon
             name={post.isSaved ? 'bookmark' : 'bookmark-outline'}
             size={22}

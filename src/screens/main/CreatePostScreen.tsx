@@ -8,6 +8,8 @@ import {View, StyleSheet, ScrollView, Alert, Text, TextInput, TouchableOpacity, 
 import {spacing, lightTheme, darkTheme} from '../../theme';
 import {useNavigation} from '@react-navigation/native';
 import SimpleIcon from '../../components/SimpleIcon';
+import {useAppDispatch, useAppSelector} from '../../store';
+import {addPost} from '../../store/slices/feedSlice';
 
 interface CreatePostScreenProps {
   navigation: any;
@@ -17,6 +19,9 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({navigation}) => {
   const colorScheme = useColorScheme();
   const theme = colorScheme === 'dark' ? darkTheme : lightTheme;
   const nav = useNavigation<any>();
+  const dispatch = useAppDispatch();
+  const user = useAppSelector(state => state.auth.user);
+
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -34,20 +39,55 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({navigation}) => {
   };
 
   const handlePost = () => {
-    if (!content.trim()) return;
+    if (!content.trim() || !user) return;
 
     setLoading(true);
-    // Simulate post creation
-    setTimeout(() => {
+
+    try {
+      // Extract hashtags and tickers from content
+      const hashtags = extractHashtags(content);
+      const tickers = extractTickers(content);
+
+      // Create new post object
+      const newPost = {
+        id: Date.now().toString(),
+        userId: user.id,
+        username: user.username,
+        displayName: user.displayName,
+        profilePicture: user.profilePicture,
+        content: content.trim(),
+        mediaUrls: [],
+        postType: 'text' as const,
+        category: 'general',
+        hashtags,
+        mentionedUsers: [],
+        tickers,
+        likesCount: 0,
+        commentsCount: 0,
+        sharesCount: 0,
+        isLiked: false,
+        isSaved: false,
+        isEdited: false,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      // Dispatch to Redux store
+      dispatch(addPost(newPost));
+
       setLoading(false);
       setShowSuccess(true);
       setContent('');
 
       // Navigate to Home tab after a short delay
       setTimeout(() => {
+        setShowSuccess(false);
         navigation.navigate('Home');
       }, 1500);
-    }, 1000);
+    } catch (err) {
+      setLoading(false);
+      Alert.alert('Error', 'Failed to create post. Please try again.');
+    }
   };
 
   const handleCancel = () => {

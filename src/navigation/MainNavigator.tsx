@@ -5,7 +5,7 @@
 
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {useColorScheme} from 'react-native';
+import {useColorScheme, Text} from 'react-native';
 import {lightTheme, darkTheme} from '../theme';
 import SimpleIcon from '../components/SimpleIcon';
 
@@ -40,16 +40,14 @@ const MainNavigator: React.FC = () => {
           borderTopColor: theme.colors.border,
           borderTopWidth: 1,
         },
-        tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: '600',
-        },
       }}>
       <Tab.Screen
         name="Home"
         component={HomeScreen}
         options={{
-          tabBarLabel: 'Home',
+          tabBarLabel: ({color}) => (
+            <Text style={{fontSize: 12, color}}>Home</Text>
+          ),
           tabBarIcon: ({color, size}) => (
             <SimpleIcon name="home" size={size} color={color} />
           ),
@@ -59,7 +57,9 @@ const MainNavigator: React.FC = () => {
         name="Search"
         component={SearchScreen}
         options={{
-          tabBarLabel: 'Search',
+          tabBarLabel: ({color}) => (
+            <Text style={{fontSize: 12, color}}>Search</Text>
+          ),
           tabBarIcon: ({color, size}) => (
             <SimpleIcon name="search" size={size} color={color} />
           ),
@@ -69,7 +69,9 @@ const MainNavigator: React.FC = () => {
         name="CreatePost"
         component={CreatePostScreen}
         options={{
-          tabBarLabel: 'Post',
+          tabBarLabel: ({color}) => (
+            <Text style={{fontSize: 12, color}}>Post</Text>
+          ),
           tabBarIcon: ({color, size}) => (
             <SimpleIcon name="plus" size={size} color={color} />
           ),
@@ -79,7 +81,9 @@ const MainNavigator: React.FC = () => {
         name="Notifications"
         component={NotificationsScreen}
         options={{
-          tabBarLabel: 'Alerts',
+          tabBarLabel: ({color}) => (
+            <Text style={{fontSize: 12, color}}>Alerts</Text>
+          ),
           tabBarIcon: ({color, size}) => (
             <SimpleIcon name="bell" size={size} color={color} />
           ),
@@ -89,7 +93,9 @@ const MainNavigator: React.FC = () => {
         name="Profile"
         component={ProfileScreen}
         options={{
-          tabBarLabel: 'Profile',
+          tabBarLabel: ({color}) => (
+            <Text style={{fontSize: 12, color}}>Profile</Text>
+          ),
           tabBarIcon: ({color, size}) => (
             <SimpleIcon name="user" size={size} color={color} />
           ),

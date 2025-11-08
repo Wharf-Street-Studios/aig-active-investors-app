@@ -4,9 +4,10 @@
  */
 
 import React, {useState} from 'react';
-import {View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Text, TextInput, TouchableOpacity, useColorScheme} from 'react-native';
+import {View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Text, TextInput, TouchableOpacity, useColorScheme, Alert} from 'react-native';
 import {spacing, lightTheme, darkTheme} from '../../theme';
 import {useAppSelector, useAppDispatch} from '../../store';
+import {updateUser} from '../../store/slices/authSlice';
 
 interface EditProfileScreenProps {
   navigation: any;
@@ -25,13 +26,33 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = () => {
+    if (!displayName || !username || !email) {
+      Alert.alert('Error', 'Please fill in all required fields');
+      return;
+    }
+
     setIsSaving(true);
-    // In a real app, this would update via API
-    setTimeout(() => {
+
+    try {
+      // Update Redux store
+      dispatch(updateUser({
+        displayName,
+        username,
+        email,
+        bio,
+      }));
+
       setIsSaving(false);
-      // Show success message
-      navigation.goBack();
-    }, 1000);
+      Alert.alert('Success', 'Profile updated successfully', [
+        {
+          text: 'OK',
+          onPress: () => navigation.goBack(),
+        },
+      ]);
+    } catch (error) {
+      setIsSaving(false);
+      Alert.alert('Error', 'Failed to update profile. Please try again.');
+    }
   };
 
   const handleCancel = () => {
