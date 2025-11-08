@@ -125,6 +125,14 @@ const SimpleIcon: React.FC<SimpleIconProps> = ({name, size = 24, color = '#000'}
         return (
           <Polyline points="9 18 15 12 9 6" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         );
+      case 'help':
+        return (
+          <>
+            <Circle cx="12" cy="12" r="10" fill="none" stroke={color} strokeWidth="2" />
+            <Path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <Circle cx="12" cy="17" r="0.5" fill={color} stroke={color} strokeWidth="1" />
+          </>
+        );
       default:
         return (
           <Circle cx="12" cy="12" r="10" fill="none" stroke={color} strokeWidth="2" />

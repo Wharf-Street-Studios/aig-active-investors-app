@@ -69,25 +69,33 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
         <View style={styles.menuContainer}>
           <Text style={[styles.menuTitle, {color: theme.colors.muted}]}>Settings</Text>
 
-          <TouchableOpacity style={[styles.menuItem, {borderBottomColor: theme.colors.border}]}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('AccountSettings')}
+            style={[styles.menuItem, {borderBottomColor: theme.colors.border}]}>
             <SimpleIcon name="settings" size={24} color={theme.colors.text} />
             <Text style={[styles.menuItemText, {color: theme.colors.text}]}>Account Settings</Text>
             <SimpleIcon name="chevron-right" size={20} color={theme.colors.muted} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.menuItem, {borderBottomColor: theme.colors.border}]}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('PrivacySecurity')}
+            style={[styles.menuItem, {borderBottomColor: theme.colors.border}]}>
             <SimpleIcon name="settings" size={24} color={theme.colors.text} />
             <Text style={[styles.menuItemText, {color: theme.colors.text}]}>Privacy & Security</Text>
             <SimpleIcon name="chevron-right" size={20} color={theme.colors.muted} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.menuItem, {borderBottomColor: theme.colors.border}]}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('NotificationSettings')}
+            style={[styles.menuItem, {borderBottomColor: theme.colors.border}]}>
             <SimpleIcon name="bell" size={24} color={theme.colors.text} />
             <Text style={[styles.menuItemText, {color: theme.colors.text}]}>Notifications</Text>
             <SimpleIcon name="chevron-right" size={20} color={theme.colors.muted} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.menuItem, {borderBottomColor: theme.colors.border}]}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('SavedPosts')}
+            style={[styles.menuItem, {borderBottomColor: theme.colors.border}]}>
             <SimpleIcon name="bookmark" size={24} color={theme.colors.text} />
             <Text style={[styles.menuItemText, {color: theme.colors.text}]}>Saved Posts</Text>
             <SimpleIcon name="chevron-right" size={20} color={theme.colors.muted} />
@@ -95,13 +103,17 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
 
           <View style={[styles.divider, {backgroundColor: theme.colors.border}]} />
 
-          <TouchableOpacity style={[styles.menuItem, {borderBottomColor: theme.colors.border}]}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('HelpSupport')}
+            style={[styles.menuItem, {borderBottomColor: theme.colors.border}]}>
             <SimpleIcon name="user" size={24} color={theme.colors.text} />
             <Text style={[styles.menuItemText, {color: theme.colors.text}]}>Help & Support</Text>
             <SimpleIcon name="chevron-right" size={20} color={theme.colors.muted} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.menuItem, {borderBottomColor: theme.colors.border}]}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('About')}
+            style={[styles.menuItem, {borderBottomColor: theme.colors.border}]}>
             <SimpleIcon name="user" size={24} color={theme.colors.text} />
             <Text style={[styles.menuItemText, {color: theme.colors.text}]}>About</Text>
             <SimpleIcon name="chevron-right" size={20} color={theme.colors.muted} />
