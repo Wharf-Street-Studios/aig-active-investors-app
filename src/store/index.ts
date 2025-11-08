@@ -15,7 +15,7 @@ import {
   PURGE,
   REGISTER,
 } from 'redux-persist';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import storage from './storage';
 import {combineReducers} from 'redux';
 
 // Import reducers
@@ -36,7 +36,7 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: 'root',
   version: 1,
-  storage: AsyncStorage,
+  storage,
   whitelist: ['auth', 'user'], // Only persist auth and user data
 };
 
